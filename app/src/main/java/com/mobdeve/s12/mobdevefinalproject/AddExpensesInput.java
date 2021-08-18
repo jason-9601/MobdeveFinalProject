@@ -6,14 +6,17 @@ import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Spinner;
 
 import java.util.Calendar;
 
 public class AddExpensesInput extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
 
     private EditText etExpenseDate;
+    private Spinner spExpenseCategory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +31,12 @@ public class AddExpensesInput extends AppCompatActivity implements DatePickerDia
                 showDatePicker();
             }
         });
+
+        spExpenseCategory = findViewById(R.id.sp_expense_category);
+        ArrayAdapter<CharSequence> spAdapter = ArrayAdapter.createFromResource(this,
+                R.array.expenses_categories_array, android.R.layout.simple_spinner_item);
+        spAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spExpenseCategory.setAdapter(spAdapter);
     }
 
     private void showDatePicker() {

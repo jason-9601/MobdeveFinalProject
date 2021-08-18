@@ -1,5 +1,14 @@
 <resources>
     <string name="app_name">MobdeveFinalProject</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string-array name="expenses_categories_array">
+        <item>Food</item>
+        <item>Utilities</item>
+        <item>Transportation</item>
+        <item>Debt Payments</item>
+        <item>Entertainment</item>
+        <item>Personal Care</item>
+        <item>Investments</item>
+        <item>Home Supplies</item>
+        <item>Other</item>
+    </string-array>
 </resources>
