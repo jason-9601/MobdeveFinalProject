@@ -88,6 +88,7 @@ public class AddExpensesInput extends AppCompatActivity implements DatePickerDia
         this.daySelected = Integer.toString(day);
     }
 
+    // Return true if at least one of the input fields is empty //
     public boolean inputIsNotComplete() {
         if (etExpenseTitle.getText().toString().trim().length() == 0 ||
                 yearSelected.length() == 0 ||

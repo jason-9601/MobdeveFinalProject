@@ -1,15 +1,22 @@
 package com.mobdeve.s12.mobdevefinalproject;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -18,7 +25,20 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
  */
 public class AddExpensesFragment extends Fragment {
 
+    private RecyclerView rvAddExpenses;
+    private RecyclerView.LayoutManager lmManager;
+    private AddExpensesAdapter addExpensesAdapter;
     private FloatingActionButton fabAddExpense;
+    private TextView tvExpensesAmount;
+
+    private DatabaseHelper dbHelper;
+    private ArrayList<String> expenseIdList;
+    private ArrayList<String> expenseTitleList;
+    private ArrayList<String> expenseYearList;
+    private ArrayList<String> expenseMonthList;
+    private ArrayList<String> expenseDayList;
+    private ArrayList<String> expenseCategoryList;
+    private ArrayList<String> expenseAmountList;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -75,7 +95,62 @@ public class AddExpensesFragment extends Fragment {
             }
         });
 
+        tvExpensesAmount = view.findViewById(R.id.tv_expenses_amount);
+
+        dbHelper = new DatabaseHelper(getActivity());
+
+        initArrayLists();
+        readAllExpenseTable();
+        initRecyclerView(view);
+
+        tvExpensesAmount.setText(Float.toString(getTotalExpenses()));
+
         // Inflate the layout for this fragment
         return view;
+    }
+
+    private void initRecyclerView(View view) {
+        this.rvAddExpenses = view.findViewById(R.id.rv_add_expenses);
+        this.lmManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        this.rvAddExpenses.setLayoutManager(this.lmManager);
+        this.addExpensesAdapter = new AddExpensesAdapter(expenseTitleList, expenseYearList,
+                expenseMonthList, expenseDayList, expenseAmountList);
+        this.rvAddExpenses.setAdapter(addExpensesAdapter);
+    }
+
+    private void initArrayLists() {
+        expenseIdList = new ArrayList<>();
+        expenseTitleList = new ArrayList<>();
+        expenseYearList = new ArrayList<>();
+        expenseMonthList = new ArrayList<>();
+        expenseDayList = new ArrayList<>();;
+        expenseCategoryList = new ArrayList<>();;
+        expenseAmountList = new ArrayList<>();;
+    }
+
+    private void readAllExpenseTable() {
+        Cursor cursor = dbHelper.readAllExpenseTable();
+        if (cursor.getCount() == 0) {
+            Toast.makeText(getActivity(), "No Data Available", Toast.LENGTH_SHORT).show();
+        } else {
+            while (cursor.moveToNext()) {
+                expenseIdList.add(cursor.getString(0));
+                expenseTitleList.add(cursor.getString(1));
+                expenseYearList.add(cursor.getString(2));
+                expenseMonthList.add(cursor.getString(3));
+                expenseDayList.add(cursor.getString(4));
+                expenseAmountList.add(cursor.getString(5));
+                expenseCategoryList.add(cursor.getString(6));
+            }
+        }
+    }
+
+    private float getTotalExpenses() {
+        float totalExpenses = -1;
+        Cursor cursor = dbHelper.getTotalExpenses();
+        if(cursor.moveToFirst()) {
+            totalExpenses = cursor.getFloat(0);
+        }
+        return totalExpenses;
     }
 }
