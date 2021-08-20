@@ -7,22 +7,35 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.util.Calendar;
 
 public class AddExpensesInput extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
 
+    private EditText etExpenseTitle;
+    private EditText etExpenseAmount;
     private EditText etExpenseDate;
     private Spinner spExpenseCategory;
+    private Button btnAddExpensesInput;
+
+    private String yearSelected;
+    private String monthSelected;
+    private String daySelected;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_expenses_input);
 
+        etExpenseTitle = findViewById(R.id.et_expense_title);
+        etExpenseAmount = findViewById(R.id.et_expense_amount);
+
+        // Date Input //
         etExpenseDate = findViewById(R.id.et_expense_date);
 
         etExpenseDate.setOnClickListener(new View.OnClickListener() {
@@ -32,11 +45,30 @@ public class AddExpensesInput extends AppCompatActivity implements DatePickerDia
             }
         });
 
+        // Categories Dropdown //
         spExpenseCategory = findViewById(R.id.sp_expense_category);
         ArrayAdapter<CharSequence> spAdapter = ArrayAdapter.createFromResource(this,
                 R.array.expenses_categories_array, android.R.layout.simple_spinner_item);
         spAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spExpenseCategory.setAdapter(spAdapter);
+
+        // Add Expense Button //
+        btnAddExpensesInput = findViewById(R.id.btn_add_expenses_input);
+        btnAddExpensesInput.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatabaseHelper dbHelper = new DatabaseHelper(AddExpensesInput.this);
+
+                if (inputIsNotComplete()) {
+                    Toast.makeText(getApplicationContext(), "Please complete fields", Toast.LENGTH_SHORT).show();
+                } else {
+                    dbHelper.addExpense(etExpenseTitle.getText().toString().trim(),
+                            yearSelected, monthSelected, daySelected,
+                            Float.valueOf(etExpenseAmount.getText().toString()),
+                            spExpenseCategory.getSelectedItem().toString());
+                }
+            }
+        });
     }
 
     private void showDatePicker() {
@@ -50,9 +82,23 @@ public class AddExpensesInput extends AppCompatActivity implements DatePickerDia
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int day) {
-
         etExpenseDate.setHint(Integer.toString(year) + "/" + Integer.toString(month) + "/" + Integer.toString(day));
+        this.yearSelected = Integer.toString(year);
+        this.monthSelected = Integer.toString(month);
+        this.daySelected = Integer.toString(day);
+    }
 
+    public boolean inputIsNotComplete() {
+        if (etExpenseTitle.getText().toString().trim().length() == 0 ||
+                yearSelected.length() == 0 ||
+                monthSelected.length() == 0 ||
+                daySelected.length() == 0 ||
+                etExpenseAmount.getText().toString().length() == 0 ||
+                spExpenseCategory.getSelectedItem().toString().length() == 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }
