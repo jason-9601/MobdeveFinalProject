@@ -50,7 +50,7 @@ public class AddExpensesAdapter extends RecyclerView.Adapter<AddExpensesViewHold
         String currentExpenseAmount = this.expenseAmountList.get(position);
 
         holder.setTvExpenseTitle(currentExpenseTitle);
-        holder.setTvExpenseDate(currentExpenseDay + " " + currentExpenseMonth);
+        holder.setTvExpenseDate(currentExpenseYear + "/" + currentExpenseMonth + "/" + currentExpenseDay);
         holder.setTvExpenseValue(currentExpenseAmount);
     }
 
