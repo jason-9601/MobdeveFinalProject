@@ -25,6 +25,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String EXPENSE_COLUMN_AMOUNT = "expense_amount";
     private static final String EXPENSE_COLUMN_CATEGORY = "expense_category";
 
+    // USER TABLE //
+    private static final String USER_TABLE = "user_table";
+    private static final String USER_COLUMN_ID = "id";
+    private static final String USER_COLUMN_USERNAME = "username";
+    private static final String USER_COLUMN_PASSWORD = "password";
+    private static final String USER_COLUMN_EMAIL = "email";
+
     public DatabaseHelper(@Nullable Context context) {
         super(context, DB_NAME, null, DB_VERSION);
         this.context = context;
@@ -33,7 +40,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        // Create Expense Table //
+        // Create expense_table //
         String queryCreateExpenseTable =
                 "CREATE TABLE " + EXPENSE_TABLE +
                         " (" + EXPENSE_COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -45,6 +52,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         EXPENSE_COLUMN_CATEGORY + " TEXT" +
                         ");";
 
+        // Create user_table //
+        String queryCreateUserTable =
+                "CREATE TABLE " + USER_TABLE +
+                        " (" + USER_COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        USER_COLUMN_USERNAME + " TEXT, " +
+                        USER_COLUMN_PASSWORD + " TEXT, " +
+                        USER_COLUMN_EMAIL + " TEXT" +
+                        ");";
+
+        // Execute queries //
+        db.execSQL(queryCreateUserTable);
         db.execSQL(queryCreateExpenseTable);
     }
 
@@ -52,13 +70,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
         db.execSQL("DROP TABLE IF EXISTS " + EXPENSE_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + USER_TABLE);
+
         onCreate(db);
 
     }
 
     /* DATABASE FUNCTIONS */
 
-    /* Add expense to EXPENSE_TABLE */
+    /* Add expense to expense_table */
     public void addExpense(String name, String year, String month, String day,
                            double amount, String category) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -80,6 +100,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    /* Get all contents of expense_table */
     public Cursor readAllExpenseTable() {
         String query = "SELECT * FROM " + EXPENSE_TABLE;
         SQLiteDatabase db = this.getReadableDatabase();
@@ -91,6 +112,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
+    /* Get the sum of the amount column in expense_table */
     public Cursor getTotalExpenses() {
         String query = "SELECT SUM(" + EXPENSE_COLUMN_AMOUNT + ") " +
                 "FROM " + EXPENSE_TABLE + " WHERE " + EXPENSE_COLUMN_AMOUNT +
@@ -102,6 +124,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             cursor = db.rawQuery(query, null);
         }
         return cursor;
+    }
+
+    /* Add user to user_table */
+    public void addUser(String username, String password, String email) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+
+        cv.put(USER_COLUMN_USERNAME, username);
+        cv.put(USER_COLUMN_PASSWORD, password);
+        cv.put(USER_COLUMN_EMAIL, email);
+
+        long result = db.insert(USER_TABLE, null, cv);
+
+        if (result == -1) {
+            Toast.makeText(context, "Failed register :(", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(context, "Register success!", Toast.LENGTH_SHORT).show();
+        }
     }
 
 }
