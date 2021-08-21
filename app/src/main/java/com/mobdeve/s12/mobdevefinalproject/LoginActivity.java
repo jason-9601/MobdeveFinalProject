@@ -6,24 +6,45 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 public class LoginActivity extends AppCompatActivity {
 
-    Button btnLoginSubmit;
-    Button btnLoginToRegisterActivity;
+    private DatabaseHelper dbHelper;
+    private EditText etLoginUsername;
+    private EditText etLoginPassword;
+    private Button btnLoginSubmit;
+    private Button btnLoginToRegisterActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        btnLoginSubmit = findViewById(R.id.btn_register_submit);
+        dbHelper = new DatabaseHelper(LoginActivity.this);
+
+        etLoginUsername = findViewById(R.id.et_login_username);
+        etLoginPassword = findViewById(R.id.et_login_password);
+
+        btnLoginSubmit = findViewById(R.id.btn_login_submit);
         btnLoginSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
+
+                if (inputIsNotComplete()) {
+                    Toast.makeText(getApplicationContext(), "Please complete fields", Toast.LENGTH_SHORT).show();
+                } else {
+                    boolean loginResult = dbHelper.loginUser(etLoginUsername.getText().toString().trim(),
+                            etLoginPassword.getText().toString().trim());
+
+                    if (loginResult) {
+                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                }
+
             }
         });
 
@@ -35,5 +56,15 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    // Return true if at least one of the input fields is empty //
+    public boolean inputIsNotComplete() {
+        if (etLoginUsername.getText().toString().trim().length() == 0 ||
+                etLoginPassword.getText().toString().trim().length() == 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

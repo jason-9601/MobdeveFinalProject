@@ -144,4 +144,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    /* Function for login. Return true if username password match exists */
+    public boolean loginUser(String username, String password) {
+        String query = "SELECT * FROM " + USER_TABLE + " WHERE username=?" +
+                " AND password=?";
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = null;
+        if (db != null) {
+            cursor = db.rawQuery(query, new String[] {username, password});
+        }
+
+        // Match Found //
+        if (cursor.getCount() > 0) {
+            return true;
+        }
+
+        // No Matches //
+        Toast.makeText(context, "Invalid credentials", Toast.LENGTH_SHORT).show();
+        return false;
+    }
+
 }
