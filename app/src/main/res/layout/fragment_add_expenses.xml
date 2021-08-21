@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#E5F3FF"
+    android:background="@color/blue_bg"
     tools:context=".AddExpensesFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -95,6 +95,7 @@
             android:backgroundTint="@color/orange_1"
             android:clickable="true"
             android:src="@drawable/ic_add"
+            app:tint="#FFFFFF"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
