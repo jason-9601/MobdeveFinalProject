@@ -3,7 +3,9 @@ package com.mobdeve.s12.mobdevefinalproject;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,12 +19,18 @@ public class LoginActivity extends AppCompatActivity {
     private Button btnLoginSubmit;
     private Button btnLoginToRegisterActivity;
 
+    // Shared preferences //
+    private SharedPreferences sp;
+    private SharedPreferences.Editor spEditor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
         dbHelper = new DatabaseHelper(LoginActivity.this);
+        sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        spEditor = this.sp.edit();
 
         etLoginUsername = findViewById(R.id.et_login_username);
         etLoginPassword = findViewById(R.id.et_login_password);
@@ -39,6 +47,10 @@ public class LoginActivity extends AppCompatActivity {
                             etLoginPassword.getText().toString().trim());
 
                     if (loginResult) {
+                        // Put username in shared preferences if successful login //
+                        spEditor.putString("KEY_USERNAME_LOGGED_IN", etLoginUsername.getText().toString().trim());
+                        spEditor.apply();
+
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(intent);
                         finish();

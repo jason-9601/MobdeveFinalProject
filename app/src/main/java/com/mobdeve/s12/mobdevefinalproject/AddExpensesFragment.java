@@ -1,6 +1,7 @@
 package com.mobdeve.s12.mobdevefinalproject;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 
@@ -8,6 +9,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +27,12 @@ import java.util.ArrayList;
  * create an instance of this fragment.
  */
 public class AddExpensesFragment extends Fragment {
+
+    private String loggedInUser;
+
+    // Shared preferences //
+    private SharedPreferences sp;
+    private SharedPreferences.Editor spEditor;
 
     private RecyclerView rvAddExpenses;
     private RecyclerView.LayoutManager lmManager;
@@ -95,17 +104,21 @@ public class AddExpensesFragment extends Fragment {
             }
         });
 
-        tvExpensesAmount = view.findViewById(R.id.tv_expenses_amount);
-
         dbHelper = new DatabaseHelper(getActivity());
+        sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        spEditor = this.sp.edit();
+
+        // Print logged in user to Logcat for checking //
+        loggedInUser = sp.getString("KEY_USERNAME_LOGGED_IN", "N/A");
+        Log.d("Logged in user: ", loggedInUser);
 
         initArrayLists();
         readAllExpenseTable();
         initRecyclerView(view);
 
+        tvExpensesAmount = view.findViewById(R.id.tv_expenses_amount);
         tvExpensesAmount.setText(Float.toString(getTotalExpenses()));
 
-        // Inflate the layout for this fragment
         return view;
     }
 
