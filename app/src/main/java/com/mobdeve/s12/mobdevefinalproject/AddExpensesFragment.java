@@ -39,6 +39,7 @@ public class AddExpensesFragment extends Fragment {
     private AddExpensesAdapter addExpensesAdapter;
     private FloatingActionButton fabAddExpense;
     private TextView tvExpensesAmount;
+    private TextView tvProfitsAmount;
 
     private DatabaseHelper dbHelper;
     private ArrayList<String> expenseIdList;
@@ -117,7 +118,8 @@ public class AddExpensesFragment extends Fragment {
         initRecyclerView(view);
 
         tvExpensesAmount = view.findViewById(R.id.tv_expenses_amount);
-        tvExpensesAmount.setText(Float.toString(getTotalExpenses()));
+        tvProfitsAmount = view.findViewById(R.id.tv_profits_amount);
+        setTotalAmountTextViews();
 
         return view;
     }
@@ -166,5 +168,19 @@ public class AddExpensesFragment extends Fragment {
             totalExpenses = cursor.getFloat(0);
         }
         return totalExpenses;
+    }
+
+    private float getTotalProfits() {
+        float totalProfits = -1;
+        Cursor cursor = dbHelper.getUserTotalProfits(loggedInUser);
+        if(cursor.moveToFirst()) {
+            totalProfits = cursor.getFloat(0);
+        }
+        return totalProfits;
+    }
+
+    private void setTotalAmountTextViews() {
+        tvExpensesAmount.setText(Float.toString(getTotalExpenses()));
+        tvProfitsAmount.setText(Float.toString(getTotalProfits()));
     }
 }
