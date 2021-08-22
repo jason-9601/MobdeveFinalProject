@@ -24,6 +24,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String EXPENSE_COLUMN_DAY = "expense_day";
     private static final String EXPENSE_COLUMN_AMOUNT = "expense_amount";
     private static final String EXPENSE_COLUMN_CATEGORY = "expense_category";
+    private static final String EXPENSE_COLUMN_USERNAME = "username";
 
     // USER TABLE //
     private static final String USER_TABLE = "user_table";
@@ -49,7 +50,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         EXPENSE_COLUMN_MONTH + " TEXT, " +
                         EXPENSE_COLUMN_DAY + " TEXT, " +
                         EXPENSE_COLUMN_AMOUNT + " DOUBLE, " +
-                        EXPENSE_COLUMN_CATEGORY + " TEXT" +
+                        EXPENSE_COLUMN_CATEGORY + " TEXT, " +
+                        EXPENSE_COLUMN_USERNAME + " TEXT" +
                         ");";
 
         // Create user_table //
@@ -100,6 +102,29 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    /* Add expense to expense_table of a user */
+    public void addUserExpense(String name, String year, String month, String day,
+                           double amount, String category, String username) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+
+        cv.put(EXPENSE_COLUMN_NAME, name);
+        cv.put(EXPENSE_COLUMN_YEAR, year);
+        cv.put(EXPENSE_COLUMN_MONTH, month);
+        cv.put(EXPENSE_COLUMN_DAY, day);
+        cv.put(EXPENSE_COLUMN_AMOUNT, amount);
+        cv.put(EXPENSE_COLUMN_CATEGORY, category);
+        cv.put(EXPENSE_COLUMN_USERNAME, username);
+
+        long result = db.insert(EXPENSE_TABLE, null, cv);
+
+        if (result == -1) {
+            Toast.makeText(context, "Failed Upload :(", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(context, "Expense successfully added :)", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     /* Get all contents of expense_table */
     public Cursor readAllExpenseTable() {
         String query = "SELECT * FROM " + EXPENSE_TABLE;
@@ -108,6 +133,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor cursor = null;
         if (db != null) {
             cursor = db.rawQuery(query, null);
+        }
+        return cursor;
+    }
+
+    /* Get all contents of expense_table of the selected user */
+    public Cursor readAllUserExpenseTable(String username) {
+        String query = "SELECT * FROM " + EXPENSE_TABLE + " WHERE " +
+                EXPENSE_COLUMN_USERNAME + "=?";
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = null;
+        if (db != null) {
+            cursor = db.rawQuery(query, new String[] {username});
         }
         return cursor;
     }
@@ -122,6 +160,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor cursor = null;
         if (db != null) {
             cursor = db.rawQuery(query, null);
+        }
+        return cursor;
+    }
+
+    /* Get the sum of the amount column in expense_table of selected user */
+    public Cursor getUserTotalExpenses(String username) {
+        String query = "SELECT SUM(" + EXPENSE_COLUMN_AMOUNT + ") " +
+                "FROM " + EXPENSE_TABLE + " WHERE " + EXPENSE_COLUMN_AMOUNT +
+                " < 0 AND " + EXPENSE_COLUMN_USERNAME + "=?";
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = null;
+        if (db != null) {
+            cursor = db.rawQuery(query, new String[] {username});
         }
         return cursor;
     }

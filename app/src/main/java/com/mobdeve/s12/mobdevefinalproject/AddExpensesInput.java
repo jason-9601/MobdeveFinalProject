@@ -3,7 +3,9 @@ package com.mobdeve.s12.mobdevefinalproject;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -16,6 +18,12 @@ import android.widget.Toast;
 import java.util.Calendar;
 
 public class AddExpensesInput extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
+
+    private String loggedInUser;
+
+    // Shared preferences //
+    private SharedPreferences sp;
+    private SharedPreferences.Editor spEditor;
 
     private EditText etExpenseTitle;
     private EditText etExpenseAmount;
@@ -31,6 +39,13 @@ public class AddExpensesInput extends AppCompatActivity implements DatePickerDia
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_expenses_input);
+
+        sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        spEditor = this.sp.edit();
+
+        // Print logged in user to Logcat for checking //
+        loggedInUser = sp.getString("KEY_USERNAME_LOGGED_IN", "N/A");
+        Log.d("Logged in user: ", loggedInUser);
 
         etExpenseTitle = findViewById(R.id.et_expense_title);
         etExpenseAmount = findViewById(R.id.et_expense_amount);
@@ -62,10 +77,14 @@ public class AddExpensesInput extends AppCompatActivity implements DatePickerDia
                 if (inputIsNotComplete()) {
                     Toast.makeText(getApplicationContext(), "Please complete fields", Toast.LENGTH_SHORT).show();
                 } else {
-                    dbHelper.addExpense(etExpenseTitle.getText().toString().trim(),
+                    /* dbHelper.addExpense(etExpenseTitle.getText().toString().trim(),
                             yearSelected, monthSelected, daySelected,
                             Float.valueOf(etExpenseAmount.getText().toString()),
-                            spExpenseCategory.getSelectedItem().toString());
+                            spExpenseCategory.getSelectedItem().toString()); */
+                    dbHelper.addUserExpense(etExpenseTitle.getText().toString().trim(),
+                            yearSelected, monthSelected, daySelected,
+                            Float.valueOf(etExpenseAmount.getText().toString()),
+                            spExpenseCategory.getSelectedItem().toString(), loggedInUser);
                 }
             }
         });

@@ -142,7 +142,8 @@ public class AddExpensesFragment extends Fragment {
     }
 
     private void readAllExpenseTable() {
-        Cursor cursor = dbHelper.readAllExpenseTable();
+        // Cursor cursor = dbHelper.readAllExpenseTable();
+        Cursor cursor = dbHelper.readAllUserExpenseTable(loggedInUser);
         if (cursor.getCount() == 0) {
             Toast.makeText(getActivity(), "No Data Available", Toast.LENGTH_SHORT).show();
         } else {
@@ -160,7 +161,7 @@ public class AddExpensesFragment extends Fragment {
 
     private float getTotalExpenses() {
         float totalExpenses = -1;
-        Cursor cursor = dbHelper.getTotalExpenses();
+        Cursor cursor = dbHelper.getUserTotalExpenses(loggedInUser);
         if(cursor.moveToFirst()) {
             totalExpenses = cursor.getFloat(0);
         }
