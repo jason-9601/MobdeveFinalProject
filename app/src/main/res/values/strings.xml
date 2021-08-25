@@ -1,0 +1,44 @@
+<resources>
+    <string name="app_name">MobdeveFinalProject</string>
+    <string-array name="expenses_categories_array">
+        <item>Food</item>
+        <item>Utilities</item>
+        <item>Transportation</item>
+        <item>Debt Payments</item>
+        <item>Entertainment</item>
+        <item>Personal Care</item>
+        <item>Investments</item>
+        <item>Home Supplies</item>
+        <item>Other</item>
+    </string-array>
+
+    <string-array name="reminders_intervals_array">
+        <item>Every 5 Minutes</item>
+        <item>Every 10 minutes</item>
+        <item>Every 30 minutes</item>
+        <item>Every hour</item>
+        <item>Every 3 hours</item>
+        <item>Every 6 hours</item>
+        <item>Every 12 hours</item>
+        <item>Every 24 Hours</item>
+    </string-array>
+
+    <string-array name="reminders_intervals_starting_time_array">
+        <item>72 Hours Before</item>
+        <item>48 Hours Before</item>
+        <item>24 Hours Before</item>
+        <item>12 Hours Before</item>
+        <item>3 Hours Before</item>
+        <item>1 Hour Before</item>
+    </string-array>
+
+    <string name="Done">Done</string>
+    <string name="None">None</string>
+    <string name="DateTime">Date-Time</string>
+    <string name="Priority">Priority</string>
+
+    <string name="Sample_Date">December 31, 2021</string>
+    <string name="Sample_Time">12:00 AM</string>
+    <string name="Sample_Text">Say "Hello World"</string>
+
+</resources>
