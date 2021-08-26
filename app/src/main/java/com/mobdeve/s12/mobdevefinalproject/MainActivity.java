@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 
@@ -14,6 +13,7 @@ import com.google.android.material.navigation.NavigationBarView;
 import com.mobdeve.s12.mobdevefinalproject.addexpenses.AddExpensesFragment;
 import com.mobdeve.s12.mobdevefinalproject.notes.NotesFragment;
 import com.mobdeve.s12.mobdevefinalproject.todo.ToDoFragment;
+import com.mobdeve.s12.mobdevefinalproject.totalexpenses.TotalExpensesFragment;
 
 public class MainActivity extends AppCompatActivity {
 
