@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".addexpenses.AddExpensesInput">
+    tools:context=".AddExpensesInput">
 
     <EditText
         android:id="@+id/et_expense_title"
