@@ -9,6 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MobdeveFinalProject">
+        <activity android:name=".addexpenses.AddExpensesInput" android:screenOrientation="portrait"></activity>
         <activity android:name=".RegisterActivity" android:screenOrientation="portrait"></activity>
         <activity android:name=".LoginActivity" android:screenOrientation="portrait">
             <intent-filter>
