@@ -194,7 +194,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     /* Return the sums of expenses grouped by category in expense_table of selected user */
     public Cursor getAllCategoryExpenses(String username) {
-        String query = "SELECT SUM(" + EXPENSE_COLUMN_AMOUNT + ") " +
+        String query = "SELECT " + EXPENSE_COLUMN_CATEGORY + " ," +
+                "SUM(" + EXPENSE_COLUMN_AMOUNT + ") " +
                 "FROM " + EXPENSE_TABLE + " WHERE " + EXPENSE_COLUMN_AMOUNT +
                 " < 0 AND " + EXPENSE_COLUMN_USERNAME + "=? GROUP BY " +
                 EXPENSE_COLUMN_CATEGORY;
@@ -209,7 +210,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     /* Return the sums of profits grouped by category in expense_table of selected user */
     public Cursor getAllCategoryProfits(String username) {
-        String query = "SELECT SUM(" + EXPENSE_COLUMN_AMOUNT + ") " +
+        String query = "SELECT " + EXPENSE_COLUMN_CATEGORY + " ," +
+                "SUM(" + EXPENSE_COLUMN_AMOUNT + ") " +
                 "FROM " + EXPENSE_TABLE + " WHERE " + EXPENSE_COLUMN_AMOUNT +
                 " >= 0 AND " + EXPENSE_COLUMN_USERNAME + "=? GROUP BY " +
                 EXPENSE_COLUMN_CATEGORY;
