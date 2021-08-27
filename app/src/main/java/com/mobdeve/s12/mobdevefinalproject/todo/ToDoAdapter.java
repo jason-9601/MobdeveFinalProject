@@ -17,6 +17,10 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoViewHolder> {
 
     private ArrayList<ToDo> list;
 
+    public ToDoAdapter(ArrayList<ToDo> list){
+        this.list = list;
+    }
+
     @NonNull
     @NotNull
     @Override
@@ -31,7 +35,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoViewHolder> {
     public void onBindViewHolder(@NonNull @NotNull ToDoViewHolder holder, int position) {
         holder.setTitle(list.get(position).getTodo_Title());
         holder.setDate(list.get(position).getTodo_date());
-        holder.setTime(list.get(position).getTodo_time().getTimeString());
+        holder.setTime(list.get(position).getTodo_time());
         holder.setPriority(list.get(position).getPriority());
 
         holder.getButton().setOnClickListener(new View.OnClickListener() {

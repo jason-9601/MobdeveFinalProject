@@ -9,8 +9,9 @@
         android:id="@+id/sp_todo_reminder_starting_time"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="20dp"
         android:layout_marginEnd="30dp"
+        app:layout_constraintBottom_toBottomOf="@+id/cbs_set_reminder"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/sp_todo_reminder_intervals"
@@ -20,18 +21,19 @@
         android:id="@+id/sp_todo_reminder_intervals"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
         android:layout_marginEnd="30dp"
+        android:layout_marginBottom="25dp"
+        app:layout_constraintBottom_toBottomOf="@+id/cbs_set_reminder"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/et_todo_time"
-        app:layout_constraintTop_toBottomOf="@+id/et_todo_time" />
+        app:layout_constraintStart_toStartOf="@+id/et_todo_time" />
 
     <CheckBox
-        android:id="@+id/checkBox3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/cbs_set_reminder"
+        android:layout_width="122dp"
+        android:layout_height="42dp"
         android:layout_marginTop="30dp"
+        android:checked="true"
         android:clickable="true"
         android:text="Set Constant Reminders"
         android:textSize="12sp"
@@ -39,11 +41,10 @@
         app:layout_constraintTop_toBottomOf="@+id/cbs_add_specific_time" />
 
     <Button
-        android:id="@+id/btn_add_expenses_input2"
+        android:id="@+id/btn_add_todo"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
-        android:layout_marginTop="10dp"
         android:layout_marginEnd="30dp"
         android:layout_marginBottom="30dp"
         android:text="OK!"
@@ -51,19 +52,19 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/checkBox3"
+        app:layout_constraintTop_toBottomOf="@+id/et_todo_priority"
         app:layout_constraintVertical_bias="0.079" />
 
     <EditText
         android:id="@+id/et_todo_time"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="50dp"
+        android:layout_marginStart="20dp"
         android:layout_marginEnd="30dp"
         android:ems="10"
         android:focusable="false"
         android:hint="Time of Activity"
-        android:inputType="time"
+        android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/cbs_add_specific_time"
@@ -101,9 +102,10 @@
 
     <CheckBox
         android:id="@+id/cbs_add_specific_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="117dp"
+        android:layout_height="42dp"
         android:layout_marginTop="20dp"
+        android:checked="true"
         android:clickable="true"
         android:text="Add Specific Time"
         android:textSize="12sp"
@@ -111,5 +113,29 @@
         app:layout_constraintHorizontal_bias="0.113"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/et_todo_date" />
+
+    <EditText
+        android:id="@+id/et_todo_priority"
+        android:layout_width="75dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="30dp"
+        android:ems="10"
+        android:inputType="number|textPersonName"
+        android:text="10"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.65"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cbs_set_reminder" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:text="Priority Level: "
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/et_todo_priority"
+        app:layout_constraintEnd_toStartOf="@+id/et_todo_priority"
+        app:layout_constraintTop_toTopOf="@+id/et_todo_priority" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

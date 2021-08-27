@@ -11,6 +11,8 @@ import androidx.annotation.Nullable;
 
 import com.mobdeve.s12.mobdevefinalproject.notes.Notes;
 
+import com.mobdeve.s12.mobdevefinalproject.todo.TimeString;
+
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private Context context;
@@ -47,6 +49,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TODO_TABLE                  = "todo_table";
     private static final String TODO_ID                     = "todo_id";
     private static final String TODO_USERNAME               = "todo_username";
+    private static final String TODO_TITLE                  = "todo_title";
     private static final String TODO_YEAR                   = "todo_year";
     private static final String TODO_MONTH                  = "todo_month";
     private static final String TODO_DAY                    = "todo_day";
@@ -96,10 +99,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         NOTES_FONT_COLOR       + " INT" +
                         ");";
 
+        String queryCreateToDoTable =
+                "CREATE TABLE " + TODO_TABLE +
+                " (" + TODO_ID                     + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                       TODO_USERNAME               + " TEXT, " +
+                       TODO_TITLE                  + " TEXT, " +
+                       TODO_YEAR                   + " TEXT, " +
+                       TODO_MONTH                  + " TEXT, " +
+                       TODO_DAY                    + " TEXT, " +
+                       TODO_ADD_SPECIFIC_TIME      + " BOOLEAN, " +
+                       TODO_SET_REMINDER           + " BOOLEAN, " +
+                       TODO_ACTIVITY_TIME          + " TEXT, " +
+                       TODO_REMINDER_INTERVALS     + " TEXT, " +
+                       TODO_REMINDER_STARTING_TIME + " TEXT, " +
+                       TODO_PRIORITY + " INT" +
+                        ");" ;
+
         // Execute queries //
         db.execSQL(queryCreateUserTable);
         db.execSQL(queryCreateExpenseTable);
         db.execSQL(queryCreateNotesTable);
+        db.execSQL(queryCreateToDoTable);
+
     }
 
     @Override
@@ -108,8 +129,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + EXPENSE_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + USER_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + NOTES_TABLE);
-
+        db.execSQL("DROP TABLE IF EXISTS " + TODO_TABLE);
         onCreate(db);
+
     }
 
     /* DATABASE FUNCTIONS */
@@ -181,6 +203,33 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    public void addUserTodo(String username, String title, String year, String month, String day,
+                            boolean add_specific_time, boolean set_reminder, String time,
+                            String intervals, String starting_time, int priority){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+
+        cv.put(TODO_USERNAME, username);
+        cv.put(TODO_TITLE, title);
+        cv.put(TODO_YEAR, year);
+        cv.put(TODO_MONTH, month);
+        cv.put(TODO_DAY, day);
+        cv.put(TODO_ADD_SPECIFIC_TIME, add_specific_time);
+        cv.put(TODO_SET_REMINDER, set_reminder);
+        cv.put(TODO_ACTIVITY_TIME, time);
+        cv.put(TODO_REMINDER_INTERVALS, intervals);
+        cv.put(TODO_REMINDER_STARTING_TIME, starting_time);
+        cv.put(TODO_PRIORITY, priority);
+
+        long result = db.insert(TODO_TABLE, null, cv);
+
+        if (result == -1) {
+            Toast.makeText(context, "Failed Upload :(", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(context, "Expense successfully added :)", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     /* Get all contents of expense_table */
     public Cursor readAllExpenseTable() {
         String query = "SELECT * FROM " + EXPENSE_TABLE;
@@ -209,6 +258,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public Cursor readAllUserNotesTable(String username){
         String query = "SELECT * FROM " + NOTES_TABLE + " WHERE " +
                 NOTES_USERNAME + "=?";
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = null;
+        if (db != null) {
+            cursor = db.rawQuery(query, new String[] {username});
+        }
+        return cursor;
+    }
+
+    public Cursor readAllUserTodoTable(String username){
+        String query = "SELECT * FROM " + TODO_TABLE + " WHERE " +
+                TODO_USERNAME + "=?";
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = null;
@@ -251,6 +312,38 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String query = "SELECT SUM(" + EXPENSE_COLUMN_AMOUNT + ") " +
                 "FROM " + EXPENSE_TABLE + " WHERE " + EXPENSE_COLUMN_AMOUNT +
                 " >= 0 AND " + EXPENSE_COLUMN_USERNAME + "=?";
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = null;
+        if (db != null) {
+            cursor = db.rawQuery(query, new String[] {username});
+        }
+        return cursor;
+    }
+
+    /* Return the sums of expenses grouped by category in expense_table of selected user */
+    public Cursor getAllCategoryExpenses(String username) {
+        String query = "SELECT " + EXPENSE_COLUMN_CATEGORY + " ," +
+                "SUM(" + EXPENSE_COLUMN_AMOUNT + ") " +
+                "FROM " + EXPENSE_TABLE + " WHERE " + EXPENSE_COLUMN_AMOUNT +
+                " < 0 AND " + EXPENSE_COLUMN_USERNAME + "=? GROUP BY " +
+                EXPENSE_COLUMN_CATEGORY;
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = null;
+        if (db != null) {
+            cursor = db.rawQuery(query, new String[] {username});
+        }
+        return cursor;
+    }
+
+    /* Return the sums of profits grouped by category in expense_table of selected user */
+    public Cursor getAllCategoryProfits(String username) {
+        String query = "SELECT " + EXPENSE_COLUMN_CATEGORY + " ," +
+                "SUM(" + EXPENSE_COLUMN_AMOUNT + ") " +
+                "FROM " + EXPENSE_TABLE + " WHERE " + EXPENSE_COLUMN_AMOUNT +
+                " >= 0 AND " + EXPENSE_COLUMN_USERNAME + "=? GROUP BY " +
+                EXPENSE_COLUMN_CATEGORY;
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = null;
