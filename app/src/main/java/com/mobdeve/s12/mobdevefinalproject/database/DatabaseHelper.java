@@ -192,6 +192,36 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
+    /* Return the sums of expenses grouped by category in expense_table of selected user */
+    public Cursor getAllCategoryExpenses(String username) {
+        String query = "SELECT SUM(" + EXPENSE_COLUMN_AMOUNT + ") " +
+                "FROM " + EXPENSE_TABLE + " WHERE " + EXPENSE_COLUMN_AMOUNT +
+                " < 0 AND " + EXPENSE_COLUMN_USERNAME + "=? GROUP BY " +
+                EXPENSE_COLUMN_CATEGORY;
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = null;
+        if (db != null) {
+            cursor = db.rawQuery(query, new String[] {username});
+        }
+        return cursor;
+    }
+
+    /* Return the sums of profits grouped by category in expense_table of selected user */
+    public Cursor getAllCategoryProfits(String username) {
+        String query = "SELECT SUM(" + EXPENSE_COLUMN_AMOUNT + ") " +
+                "FROM " + EXPENSE_TABLE + " WHERE " + EXPENSE_COLUMN_AMOUNT +
+                " >= 0 AND " + EXPENSE_COLUMN_USERNAME + "=? GROUP BY " +
+                EXPENSE_COLUMN_CATEGORY;
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = null;
+        if (db != null) {
+            cursor = db.rawQuery(query, new String[] {username});
+        }
+        return cursor;
+    }
+
     /* Add user to user_table */
     public void addUser(String username, String password, String email) {
         SQLiteDatabase db = this.getWritableDatabase();
