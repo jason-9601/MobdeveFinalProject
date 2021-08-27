@@ -199,7 +199,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (result == -1) {
             Toast.makeText(context, "Failed Upload :(", Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(context, "Expense successfully added :)", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Note successfully added :)", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -226,7 +226,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (result == -1) {
             Toast.makeText(context, "Failed Upload :(", Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(context, "Expense successfully added :)", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Todo successfully added :)", Toast.LENGTH_SHORT).show();
         }
     }
 

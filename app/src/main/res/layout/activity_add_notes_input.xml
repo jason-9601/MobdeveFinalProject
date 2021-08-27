@@ -6,43 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".notes.NotesInput">
 
-    <View
-        android:id="@+id/view_background_color_border"
-        android:layout_width="55dp"
-        android:layout_height="55dp"
-        android:layout_gravity="center"
-        android:background="@drawable/notes_color_changer_border"
-        app:layout_constraintBottom_toTopOf="@+id/btn_done"
-        app:layout_constraintEnd_toStartOf="@+id/guideline3"
-        app:layout_constraintHorizontal_bias="0.75"
-        app:layout_constraintStart_toStartOf="@+id/guideline2"
-        app:layout_constraintTop_toBottomOf="@+id/tv_notes_input" />
-
-    <View
-        android:id="@+id/view_background_color"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_gravity="center"
-        android:background="@color/white"
-        app:layout_constraintBottom_toBottomOf="@+id/view_background_color_border"
-        app:layout_constraintEnd_toEndOf="@+id/view_background_color_border"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="@+id/view_background_color_border"
-        app:layout_constraintTop_toTopOf="@+id/view_background_color_border"
-        app:layout_constraintVertical_bias="0.5" />
-
-    <View
-        android:id="@+id/view_font_color"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_gravity="center"
-        android:background="@drawable/notes_color_changer_border"
-        app:layout_constraintBottom_toTopOf="@+id/btn_done"
-        app:layout_constraintEnd_toStartOf="@+id/guideline3"
-        app:layout_constraintHorizontal_bias="0.25"
-        app:layout_constraintStart_toStartOf="@+id/guideline2"
-        app:layout_constraintTop_toBottomOf="@+id/tv_notes_input" />
-
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline2"
         android:layout_width="wrap_content"
@@ -64,11 +27,12 @@
         android:layout_marginTop="50dp"
         android:background="@drawable/notes_rounded_rectangle"
         android:clickable="true"
+        android:editable="true"
         android:enabled="true"
         android:focusable="auto"
         android:focusableInTouchMode="true"
+        android:hint="Enter Text Here..."
         android:padding="10dp"
-        android:text="Enter Text Here..."
         android:textSize="20sp"
         app:layout_constraintEnd_toStartOf="@+id/guideline3"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
@@ -84,16 +48,31 @@
         app:layout_constraintStart_toStartOf="@+id/guideline2"
         app:layout_constraintTop_toBottomOf="@+id/tv_notes_input" />
 
-    <TextView
-        android:id="@+id/tv_view_font_color_letter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <Button
+        android:id="@+id/btn_background_color"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="25dp"
+        android:backgroundTint="#FFFFFF"
+        android:clickable="true"
+        app:layout_constraintEnd_toStartOf="@+id/guideline3"
+        app:layout_constraintHorizontal_bias="0.75"
+        app:layout_constraintStart_toStartOf="@+id/guideline2"
+        app:layout_constraintTop_toBottomOf="@+id/tv_notes_input" />
+
+    <Button
+        android:id="@+id/btn_font_color"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_margin="3dp"
+        android:backgroundTint="#FFFFFF"
+        android:clickable="true"
         android:text="A"
         android:textColor="#000000"
-        android:textSize="40sp"
-        app:layout_constraintBottom_toBottomOf="@+id/view_font_color"
-        app:layout_constraintEnd_toEndOf="@+id/view_font_color"
-        app:layout_constraintStart_toStartOf="@+id/view_font_color"
-        app:layout_constraintTop_toTopOf="@+id/view_font_color" />
+        android:textSize="30sp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline3"
+        app:layout_constraintHorizontal_bias="0.252"
+        app:layout_constraintStart_toStartOf="@+id/guideline2"
+        app:layout_constraintTop_toTopOf="@+id/btn_background_color" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
