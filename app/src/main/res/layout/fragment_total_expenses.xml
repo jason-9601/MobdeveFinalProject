@@ -17,8 +17,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="Breakdown of expenses"
             android:fontFamily="@font/roboto"
+            android:text="Breakdown of expenses"
             android:textColor="@color/white"
             android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -26,36 +26,52 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/tv_total_expenses_amount"
+            android:id="@+id/tv_total_expenses_profits"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:background="#FFFFFF"
             android:fontFamily="@font/roboto_black"
-            android:text="Php20000"
+            android:text="Profits: 15000"
             android:textAlignment="center"
             android:textColor="@color/blue_bg"
-            android:textSize="40sp"
+            android:textSize="30sp"
             app:layout_constraintBottom_toTopOf="@+id/rv_total_expenses"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/guideline_total_expenses_middle" />
 
+        <TextView
+            android:id="@+id/tv_total_expenses_expenses"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:background="@color/white"
+            android:fontFamily="@font/roboto_black"
+            android:text="Expenses: 10000"
+            android:textAlignment="center"
+            android:textColor="@color/blue_bg"
+            android:textSize="30sp"
+            app:layout_constraintBottom_toTopOf="@+id/guideline_total_expenses_middle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_total_expenses"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:layout_marginTop="5dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_total_expenses_amount" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_total_expenses_profits" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline_total_expenses_middle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent=".50" />
+            app:layout_constraintGuide_percent=".60" />
 
         <Spinner
             android:id="@+id/sp_total_expenses_year"
@@ -74,6 +90,7 @@
             android:layout_marginEnd="30dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_total_expenses_header" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -12,6 +13,9 @@ import androidx.annotation.Nullable;
 import com.mobdeve.s12.mobdevefinalproject.notes.Notes;
 
 import com.mobdeve.s12.mobdevefinalproject.todo.TimeString;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -351,6 +355,37 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             cursor = db.rawQuery(query, new String[] {username});
         }
         return cursor;
+    }
+
+    /* Returns a list of the years of a user's expenses */
+    public List<String> getYearsOfExpenses(String username) {
+        List<String> yearsList = new ArrayList<String>();
+
+        String query = "SELECT DISTINCT " + EXPENSE_COLUMN_YEAR + " FROM " + EXPENSE_TABLE +
+                " WHERE " + EXPENSE_COLUMN_USERNAME + "=?" +
+                " ORDER BY " + EXPENSE_COLUMN_YEAR + " DESC";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = null;
+        if (db != null) {
+            cursor = db.rawQuery(query, new String[] {username});
+        }
+
+        if (cursor.getCount() == 0) {
+            Toast.makeText(context, "No Data Available", Toast.LENGTH_SHORT).show();
+        } else {
+            while (cursor.moveToNext()) {
+                yearsList.add(cursor.getString(0));
+            }
+        }
+
+        for (int i = 0; i < yearsList.size(); i++) {
+            String tempYear = yearsList.get(i);
+            Log.d("yearslist", tempYear);
+        }
+
+        return yearsList;
     }
 
     /* Add user to user_table */
