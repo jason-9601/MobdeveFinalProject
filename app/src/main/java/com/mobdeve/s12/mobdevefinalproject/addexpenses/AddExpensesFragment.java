@@ -93,12 +93,31 @@ public class AddExpensesFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        clearArrayLists();
+        readAllExpenseTable();
+        setTotalAmountTextViews();
+        addExpensesAdapter.notifyDataSetChanged();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_add_expenses, container, false);
 
         fabAddExpense = view.findViewById(R.id.fab_add_expense);
+        tvExpensesAmount = view.findViewById(R.id.tv_expenses_amount);
+        tvProfitsAmount = view.findViewById(R.id.tv_profits_amount);
+
+        dbHelper = new DatabaseHelper(getActivity());
+        sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        spEditor = this.sp.edit();
+
+        loggedInUser = sp.getString("KEY_USERNAME_LOGGED_IN", "N/A");
+        Log.d("Logged in user: ", loggedInUser);
+
         fabAddExpense.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -107,20 +126,9 @@ public class AddExpensesFragment extends Fragment {
             }
         });
 
-        dbHelper = new DatabaseHelper(getActivity());
-        sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        spEditor = this.sp.edit();
-
-        // Print logged in user to Logcat for checking //
-        loggedInUser = sp.getString("KEY_USERNAME_LOGGED_IN", "N/A");
-        Log.d("Logged in user: ", loggedInUser);
-
         initArrayLists();
         readAllExpenseTable();
         initRecyclerView(view);
-
-        tvExpensesAmount = view.findViewById(R.id.tv_expenses_amount);
-        tvProfitsAmount = view.findViewById(R.id.tv_profits_amount);
         setTotalAmountTextViews();
 
         return view;
@@ -143,6 +151,16 @@ public class AddExpensesFragment extends Fragment {
         expenseDayList = new ArrayList<>();;
         expenseCategoryList = new ArrayList<>();;
         expenseAmountList = new ArrayList<>();;
+    }
+
+    private void clearArrayLists() {
+        expenseIdList.clear();
+        expenseTitleList.clear();
+        expenseYearList.clear();
+        expenseMonthList.clear();
+        expenseDayList.clear();
+        expenseCategoryList.clear();
+        expenseAmountList.clear();
     }
 
     private void readAllExpenseTable() {

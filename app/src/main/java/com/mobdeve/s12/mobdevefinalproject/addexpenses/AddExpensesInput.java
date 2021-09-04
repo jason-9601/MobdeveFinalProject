@@ -80,14 +80,11 @@ public class AddExpensesInput extends AppCompatActivity implements DatePickerDia
                 if (inputIsNotComplete()) {
                     Toast.makeText(getApplicationContext(), "Please complete fields", Toast.LENGTH_SHORT).show();
                 } else {
-                    /* dbHelper.addExpense(etExpenseTitle.getText().toString().trim(),
-                            yearSelected, monthSelected, daySelected,
-                            Float.valueOf(etExpenseAmount.getText().toString()),
-                            spExpenseCategory.getSelectedItem().toString()); */
                     dbHelper.addUserExpense(etExpenseTitle.getText().toString().trim(),
                             yearSelected, monthSelected, daySelected,
                             Float.valueOf(etExpenseAmount.getText().toString()),
                             spExpenseCategory.getSelectedItem().toString(), loggedInUser);
+                    finish();
                 }
             }
         });
