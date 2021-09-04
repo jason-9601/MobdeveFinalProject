@@ -325,6 +325,89 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
+    /* Get the total expenses amount of a user given a selected month and year */
+    public Cursor getTotalExpensesOfYearMonth(String username, String year, String month) {
+        String query = "SELECT SUM(" + EXPENSE_COLUMN_AMOUNT + ") " +
+                "FROM " + EXPENSE_TABLE +
+                " WHERE " + EXPENSE_COLUMN_AMOUNT + " < 0 AND " +
+                EXPENSE_COLUMN_USERNAME + "=? AND " +
+                EXPENSE_COLUMN_YEAR + "=? AND " +
+                EXPENSE_COLUMN_MONTH + "=?";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = null;
+        if (db != null) {
+            cursor = db.rawQuery(query, new String[] {username, year, getIntegerMonth(month)});
+        }
+
+        return cursor;
+    }
+
+    /* Get the total profits amount of a user given a selected month and year */
+    public Cursor getTotalProfitsOfYearMonth(String username, String year, String month) {
+        String query = "SELECT SUM(" + EXPENSE_COLUMN_AMOUNT + ") " +
+                "FROM " + EXPENSE_TABLE +
+                " WHERE " + EXPENSE_COLUMN_AMOUNT + " >= 0 AND " +
+                EXPENSE_COLUMN_USERNAME + "=? AND " +
+                EXPENSE_COLUMN_YEAR + "=? AND " +
+                EXPENSE_COLUMN_MONTH + "=?";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = null;
+        if (db != null) {
+            cursor = db.rawQuery(query, new String[] {username, year, getIntegerMonth(month)});
+        }
+
+        return cursor;
+    }
+
+    public String getIntegerMonth(String month) {
+        String integerMonth = "";
+
+        switch(month) {
+            case "January":
+                integerMonth = "1";
+                break;
+            case "February":
+                integerMonth = "2";
+                break;
+            case "March":
+                integerMonth = "3";
+                break;
+            case "April":
+                integerMonth = "4";
+                break;
+            case "May":
+                integerMonth = "5";
+                break;
+            case "June":
+                integerMonth = "6";
+                break;
+            case "July":
+                integerMonth = "7";
+                break;
+            case "August":
+                integerMonth = "8";
+                break;
+            case "September":
+                integerMonth = "9";
+                break;
+            case "October":
+                integerMonth = "10";
+                break;
+            case "November":
+                integerMonth = "11";
+                break;
+            default:
+                integerMonth = "12";
+                break;
+        }
+
+        return integerMonth;
+    }
+
     /* Return the sums of expenses grouped by category in expense_table of selected user */
     public Cursor getAllCategoryExpenses(String username) {
         String query = "SELECT " + EXPENSE_COLUMN_CATEGORY + " ," +

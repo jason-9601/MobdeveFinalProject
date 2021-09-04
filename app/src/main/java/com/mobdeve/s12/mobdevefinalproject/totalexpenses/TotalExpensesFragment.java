@@ -13,8 +13,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mobdeve.s12.mobdevefinalproject.R;
@@ -47,6 +49,12 @@ public class TotalExpensesFragment extends Fragment {
 
     private Spinner spTotalExpensesMonth;
     private Spinner spTotalExpensesYear;
+
+    private ArrayAdapter<String> spTotalExpensesYearAdapter;
+    private ArrayAdapter<CharSequence> spTotalExpensesMonthAdapter;
+
+    private TextView tvTotalExpensesExpenses;
+    private TextView tvTotalExpensesProfits;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -94,11 +102,11 @@ public class TotalExpensesFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_total_expenses, container, false);
         initHelpers();
 
-        loggedInUser = sp.getString("KEY_USERNAME_LOGGED_IN", "N/A");
-        Log.d("Logged in user: ", loggedInUser);
-
         spTotalExpensesMonth = view.findViewById(R.id.sp_total_expenses_month);
         spTotalExpensesYear = view.findViewById(R.id.sp_total_expenses_year);
+        tvTotalExpensesExpenses = view.findViewById(R.id.tv_total_expenses_expenses);
+        tvTotalExpensesProfits = view.findViewById(R.id.tv_total_expenses_profits);
+
         populateMonthSpinner();
         populateYearSpinner();
 
@@ -106,8 +114,7 @@ public class TotalExpensesFragment extends Fragment {
         readAllCategoryExpenses();
         readAllCategoryProfits();
         initRecyclerView(view);
-
-        populateYearSpinner();
+        initSpinnerListeners();
 
         return view;
     }
@@ -129,8 +136,12 @@ public class TotalExpensesFragment extends Fragment {
 
     private void initHelpers() {
         dbHelper = new DatabaseHelper(getActivity());
+
         sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         spEditor = this.sp.edit();
+
+        loggedInUser = sp.getString("KEY_USERNAME_LOGGED_IN", "N/A");
+        Log.d("Logged in user: ", loggedInUser);
     }
 
     private void readAllCategoryProfits() {
@@ -161,10 +172,44 @@ public class TotalExpensesFragment extends Fragment {
         }
     }
 
+    private float getYearMonthTotalExpenses() {
+        float totalExpenses = -1;
+
+        String yearSelected = spTotalExpensesYear.getSelectedItem().toString();
+        String monthSelected = spTotalExpensesMonth.getSelectedItem().toString();
+
+        Cursor cursor = dbHelper.getTotalExpensesOfYearMonth(loggedInUser, yearSelected, monthSelected);
+
+        if(cursor.moveToFirst()) {
+            totalExpenses = cursor.getFloat(0);
+        }
+
+        Log.d("total", Float.toString(totalExpenses));
+
+        return totalExpenses;
+    }
+
+    private float getYearMonthTotalProfits() {
+        float totalProfits = -1;
+
+        String yearSelected = spTotalExpensesYear.getSelectedItem().toString();
+        String monthSelected = spTotalExpensesMonth.getSelectedItem().toString();
+
+        Cursor cursor = dbHelper.getTotalProfitsOfYearMonth(loggedInUser, yearSelected, monthSelected);
+
+        if(cursor.moveToFirst()) {
+            totalProfits = cursor.getFloat(0);
+        }
+
+        Log.d("total", Float.toString(totalProfits));
+
+        return totalProfits;
+    }
+
     private void populateYearSpinner() {
         List<String> yearsList = dbHelper.getYearsOfExpenses(loggedInUser);
 
-        ArrayAdapter<String> spTotalExpensesYearAdapter = new ArrayAdapter<String>(
+        spTotalExpensesYearAdapter = new ArrayAdapter<String>(
                 getActivity(), android.R.layout.simple_spinner_item, yearsList);
 
         spTotalExpensesYearAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -172,10 +217,38 @@ public class TotalExpensesFragment extends Fragment {
     }
 
     private void populateMonthSpinner() {
-        ArrayAdapter<CharSequence> spTotalExpensesMonthAdapter = ArrayAdapter.createFromResource(getActivity(),
+        spTotalExpensesMonthAdapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.months, android.R.layout.simple_spinner_item);
         spTotalExpensesMonthAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spTotalExpensesMonth.setAdapter(spTotalExpensesMonthAdapter);
+    }
+
+    private void initSpinnerListeners() {
+        spTotalExpensesMonth.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                tvTotalExpensesExpenses.setText("Expenses: " + Float.toString(getYearMonthTotalExpenses()));
+                tvTotalExpensesProfits.setText("Profits: " + Float.toString(getYearMonthTotalProfits()));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        spTotalExpensesYear.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                tvTotalExpensesExpenses.setText("Expenses: " + Float.toString(getYearMonthTotalExpenses()));
+                tvTotalExpensesProfits.setText("Profits: " + Float.toString(getYearMonthTotalProfits()));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+               
+            }
+        });
     }
 
 }
