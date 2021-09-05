@@ -120,6 +120,7 @@ public class AddExpensesFragment extends Fragment {
         this.lmManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         this.rvAddExpenses.setLayoutManager(this.lmManager);
         this.addExpensesAdapter = new AddExpensesAdapter(expenseList);
+        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(rvAddExpenses);
         this.rvAddExpenses.setAdapter(addExpensesAdapter);
     }
 
@@ -192,7 +193,9 @@ public class AddExpensesFragment extends Fragment {
 
         @Override
         public void onSwiped(@NonNull @NotNull RecyclerView.ViewHolder viewHolder, int direction) {
-
+            String swidpedExpenseId = expenseList.get(viewHolder.getAdapterPosition()).getExpenseId();
+            expenseList.remove(viewHolder.getAdapterPosition());
+            addExpensesAdapter.notifyDataSetChanged();
         }
     };
 
