@@ -15,24 +15,10 @@ import java.util.ArrayList;
 
 public class AddExpensesAdapter extends RecyclerView.Adapter<AddExpensesViewHolder> {
 
-    private ArrayList<String> expenseIdList;
-    private ArrayList<String> expenseTitleList;
-    private ArrayList<String> expenseYearList;
-    private ArrayList<String> expenseMonthList;
-    private ArrayList<String> expenseDayList;
-    private ArrayList<String> expenseAmountList;
+    private ArrayList<Expenses> expenseList;
 
-    public AddExpensesAdapter(ArrayList<String> expenseIdList,
-                              ArrayList<String> expenseTitleList,
-                              ArrayList<String> expenseYearList,
-                              ArrayList<String> expenseMonthList,
-                              ArrayList<String> expenseDayList,
-                              ArrayList<String> expenseAmountList) {
-        this.expenseTitleList = expenseTitleList;
-        this.expenseYearList = expenseYearList;
-        this.expenseMonthList = expenseMonthList;
-        this.expenseDayList = expenseDayList;
-        this.expenseAmountList = expenseAmountList;
+    public AddExpensesAdapter(ArrayList<Expenses> expenseList) {
+        this.expenseList = expenseList;
     }
 
     @NonNull
@@ -47,11 +33,11 @@ public class AddExpensesAdapter extends RecyclerView.Adapter<AddExpensesViewHold
 
     @Override
     public void onBindViewHolder(@NonNull @NotNull AddExpensesViewHolder holder, int position) {
-        String currentExpenseTitle = this.expenseTitleList.get(position);
-        String currentExpenseYear = this.expenseYearList.get(position);
-        String currentExpenseMonth = this.expenseMonthList.get(position);
-        String currentExpenseDay = this.expenseDayList.get(position);
-        String currentExpenseAmount = this.expenseAmountList.get(position);
+        String currentExpenseTitle = this.expenseList.get(position).getExpenseTitle();
+        String currentExpenseYear = this.expenseList.get(position).getExpenseYear();
+        String currentExpenseMonth = this.expenseList.get(position).getExpenseMonth();
+        String currentExpenseDay = this.expenseList.get(position).getExpenseDay();
+        String currentExpenseAmount = this.expenseList.get(position).getExpenseAmount();
 
         holder.setTvExpenseTitle(currentExpenseTitle);
         holder.setTvExpenseDate(currentExpenseYear + "/" + currentExpenseMonth + "/" + currentExpenseDay);
@@ -60,6 +46,7 @@ public class AddExpensesAdapter extends RecyclerView.Adapter<AddExpensesViewHold
 
     @Override
     public int getItemCount() {
-        return expenseTitleList.size();
+        return expenseList.size();
     }
+
 }

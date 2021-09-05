@@ -5,7 +5,9 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,13 +23,10 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.mobdeve.s12.mobdevefinalproject.database.DatabaseHelper;
 import com.mobdeve.s12.mobdevefinalproject.R;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link AddExpensesFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class AddExpensesFragment extends Fragment {
 
     private String loggedInUser;
@@ -44,36 +43,18 @@ public class AddExpensesFragment extends Fragment {
     private TextView tvProfitsAmount;
 
     private DatabaseHelper dbHelper;
-    private ArrayList<String> expenseIdList;
-    private ArrayList<String> expenseTitleList;
-    private ArrayList<String> expenseYearList;
-    private ArrayList<String> expenseMonthList;
-    private ArrayList<String> expenseDayList;
-    private ArrayList<String> expenseCategoryList;
-    private ArrayList<String> expenseAmountList;
+    private ArrayList<Expenses> expenseList;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
     public AddExpensesFragment() {
-        // Required empty public constructor
+
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment AddExpensesFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static AddExpensesFragment newInstance(String param1, String param2) {
         AddExpensesFragment fragment = new AddExpensesFragment();
         Bundle args = new Bundle();
@@ -138,30 +119,16 @@ public class AddExpensesFragment extends Fragment {
         this.rvAddExpenses = view.findViewById(R.id.rv_add_expenses);
         this.lmManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         this.rvAddExpenses.setLayoutManager(this.lmManager);
-        this.addExpensesAdapter = new AddExpensesAdapter(expenseIdList, expenseTitleList,
-                expenseYearList, expenseMonthList,
-                expenseDayList, expenseAmountList);
+        this.addExpensesAdapter = new AddExpensesAdapter(expenseList);
         this.rvAddExpenses.setAdapter(addExpensesAdapter);
     }
 
     private void initArrayLists() {
-        expenseIdList = new ArrayList<>();
-        expenseTitleList = new ArrayList<>();
-        expenseYearList = new ArrayList<>();
-        expenseMonthList = new ArrayList<>();
-        expenseDayList = new ArrayList<>();;
-        expenseCategoryList = new ArrayList<>();;
-        expenseAmountList = new ArrayList<>();;
+        expenseList = new ArrayList<>();
     }
 
     private void clearArrayLists() {
-        expenseIdList.clear();
-        expenseTitleList.clear();
-        expenseYearList.clear();
-        expenseMonthList.clear();
-        expenseDayList.clear();
-        expenseCategoryList.clear();
-        expenseAmountList.clear();
+        expenseList.clear();
     }
 
     private void readAllExpenseTable() {
@@ -170,13 +137,26 @@ public class AddExpensesFragment extends Fragment {
             Toast.makeText(getActivity(), "No Data Available", Toast.LENGTH_SHORT).show();
         } else {
             while (cursor.moveToNext()) {
-                expenseIdList.add(cursor.getString(0));
-                expenseTitleList.add(cursor.getString(1));
-                expenseYearList.add(cursor.getString(2));
-                expenseMonthList.add(cursor.getString(3));
-                expenseDayList.add(cursor.getString(4));
-                expenseAmountList.add(cursor.getString(5));
-                expenseCategoryList.add(cursor.getString(6));
+
+                String expenseId = cursor.getString(0);
+                String expenseTitle = cursor.getString(1);
+                String expenseYear = cursor.getString(2);
+                String expenseMonth = cursor.getString(3);
+                String expenseDay = cursor.getString(4);
+                String expenseAmount = cursor.getString(5);
+                String expenseCategory = cursor.getString(6);
+
+                for (int i = 0; i < 7; i++) {
+                    String temptemp = cursor.getString(i);
+                    Log.d("expensething", temptemp);
+                }
+
+                Expenses currentExpense = new Expenses(expenseId, expenseTitle,
+                        expenseYear, expenseMonth, expenseDay,
+                        expenseCategory, expenseAmount);
+
+                expenseList.add(currentExpense);
+
             }
         }
     }
@@ -203,4 +183,17 @@ public class AddExpensesFragment extends Fragment {
         tvExpensesAmount.setText(Float.toString(getTotalExpenses()));
         tvProfitsAmount.setText(Float.toString(getTotalProfits()));
     }
+
+    ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+        @Override
+        public boolean onMove(@NonNull @NotNull RecyclerView recyclerView, @NonNull @NotNull RecyclerView.ViewHolder viewHolder, @NonNull @NotNull RecyclerView.ViewHolder target) {
+            return false;
+        }
+
+        @Override
+        public void onSwiped(@NonNull @NotNull RecyclerView.ViewHolder viewHolder, int direction) {
+
+        }
+    };
+
 }
