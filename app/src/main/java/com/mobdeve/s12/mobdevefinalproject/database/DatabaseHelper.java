@@ -424,6 +424,44 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
+    /* Return the sums of expenses grouped by category in expense_table of selected user, year and month */
+    public Cursor getYearMonthCategoryExpenses(String username, String year, String month) {
+        String query = "SELECT " + EXPENSE_COLUMN_CATEGORY + " ," +
+                "SUM(" + EXPENSE_COLUMN_AMOUNT + ") " +
+                "FROM " + EXPENSE_TABLE + " WHERE " + EXPENSE_COLUMN_AMOUNT + " < 0 " +
+                "AND " + EXPENSE_COLUMN_USERNAME + "=? " +
+                "AND " + EXPENSE_COLUMN_YEAR + "=? " +
+                "AND " + EXPENSE_COLUMN_MONTH + "=? " +
+                "GROUP BY " + EXPENSE_COLUMN_CATEGORY;
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = null;
+        if (db != null) {
+            cursor = db.rawQuery(query, new String[] {username, year, getIntegerMonth(month)});
+        }
+
+        return cursor;
+    }
+
+    /* Return the sums of profits grouped by category in expense_table of selected user, year and month */
+    public Cursor getYearMonthCategoryProfits(String username, String year, String month) {
+        String query = "SELECT " + EXPENSE_COLUMN_CATEGORY + " ," +
+                "SUM(" + EXPENSE_COLUMN_AMOUNT + ") " +
+                "FROM " + EXPENSE_TABLE + " WHERE " + EXPENSE_COLUMN_AMOUNT + " >= 0 " +
+                "AND " + EXPENSE_COLUMN_USERNAME + "=? " +
+                "AND " + EXPENSE_COLUMN_YEAR + "=? " +
+                "AND " + EXPENSE_COLUMN_MONTH + "=? " +
+                "GROUP BY " + EXPENSE_COLUMN_CATEGORY;
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = null;
+        if (db != null) {
+            cursor = db.rawQuery(query, new String[] {username, year, getIntegerMonth(month)});
+        }
+
+        return cursor;
+    }
+
     /* Return the sums of profits grouped by category in expense_table of selected user */
     public Cursor getAllCategoryProfits(String username) {
         String query = "SELECT " + EXPENSE_COLUMN_CATEGORY + " ," +

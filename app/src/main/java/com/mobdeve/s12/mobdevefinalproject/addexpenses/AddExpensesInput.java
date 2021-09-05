@@ -101,9 +101,9 @@ public class AddExpensesInput extends AppCompatActivity implements DatePickerDia
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int day) {
-        etExpenseDate.setHint(Integer.toString(year) + "/" + Integer.toString(month) + "/" + Integer.toString(day));
+        etExpenseDate.setHint(Integer.toString(year) + "/" + Integer.toString(month + 1) + "/" + Integer.toString(day));
         this.yearSelected = Integer.toString(year);
-        this.monthSelected = Integer.toString(month);
+        this.monthSelected = Integer.toString(month + 1);
         this.daySelected = Integer.toString(day);
     }
 

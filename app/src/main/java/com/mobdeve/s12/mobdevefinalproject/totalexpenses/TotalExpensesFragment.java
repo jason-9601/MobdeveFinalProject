@@ -2,6 +2,7 @@ package com.mobdeve.s12.mobdevefinalproject.totalexpenses;
 
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -19,6 +20,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.formatter.PercentFormatter;
+import com.github.mikephil.charting.utils.ColorTemplate;
 import com.mobdeve.s12.mobdevefinalproject.R;
 import com.mobdeve.s12.mobdevefinalproject.addexpenses.AddExpensesAdapter;
 import com.mobdeve.s12.mobdevefinalproject.database.DatabaseHelper;
@@ -27,11 +34,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link TotalExpensesFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class TotalExpensesFragment extends Fragment {
 
     private String loggedInUser;
@@ -44,9 +46,13 @@ public class TotalExpensesFragment extends Fragment {
     private RecyclerView rvTotalExpenses;
     private RecyclerView.LayoutManager lmManager;
     private TotalExpensesAdapter totalExpensesAdapter;
+
     private ArrayList<String> totalExpenseCategoryList;
     private ArrayList<String> totalExpenseExpensesList;
     private ArrayList<String> totalExpenseProfitsList;
+
+    private ArrayList<String> totalYearMonthCategories;
+    private ArrayList<String> totalYearMonthExpenses;
 
     private Spinner spTotalExpensesMonth;
     private Spinner spTotalExpensesYear;
@@ -56,29 +62,18 @@ public class TotalExpensesFragment extends Fragment {
 
     private TextView tvTotalExpensesExpenses;
     private TextView tvTotalExpensesProfits;
+    private PieChart pieChartTotalExpenses;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
     public TotalExpensesFragment() {
-        // Required empty public constructor
+
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment TotalExpensesFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static TotalExpensesFragment newInstance(String param1, String param2) {
         TotalExpensesFragment fragment = new TotalExpensesFragment();
         Bundle args = new Bundle();
@@ -107,6 +102,7 @@ public class TotalExpensesFragment extends Fragment {
         spTotalExpensesYear = view.findViewById(R.id.sp_total_expenses_year);
         tvTotalExpensesExpenses = view.findViewById(R.id.tv_total_expenses_expenses);
         tvTotalExpensesProfits = view.findViewById(R.id.tv_total_expenses_profits);
+        pieChartTotalExpenses = view.findViewById(R.id.pie_chart_total_expenses);
 
         populateMonthSpinner();
         populateYearSpinner();
@@ -116,6 +112,9 @@ public class TotalExpensesFragment extends Fragment {
         readAllCategoryProfits();
         initRecyclerView(view);
         initSpinnerListeners();
+
+        setupPieChartExpenses();
+        loadPieChartExpenses();
 
         return view;
     }
@@ -133,6 +132,16 @@ public class TotalExpensesFragment extends Fragment {
         totalExpenseCategoryList = new ArrayList<>();
         totalExpenseExpensesList = new ArrayList<>();
         totalExpenseProfitsList = new ArrayList<>();
+        totalYearMonthExpenses = new ArrayList<>();
+        totalYearMonthCategories = new ArrayList<>();
+    }
+
+    private void clearArrayLists() {
+        totalExpenseCategoryList.clear();
+        totalExpenseExpensesList.clear();
+        totalExpenseProfitsList.clear();
+        totalYearMonthExpenses.clear();
+        totalYearMonthCategories.clear();
     }
 
     private void initHelpers() {
@@ -146,7 +155,9 @@ public class TotalExpensesFragment extends Fragment {
     }
 
     private void readAllCategoryProfits() {
-        Cursor cursor = dbHelper.getAllCategoryProfits(loggedInUser);
+        String yearSelected = spTotalExpensesYear.getSelectedItem().toString();
+        String monthSelected = spTotalExpensesMonth.getSelectedItem().toString();
+        Cursor cursor = dbHelper.getYearMonthCategoryProfits(loggedInUser, yearSelected, monthSelected);
         if (cursor.getCount() == 0) {
             Toast.makeText(getActivity(), "No Data Available", Toast.LENGTH_SHORT).show();
         } else {
@@ -159,16 +170,37 @@ public class TotalExpensesFragment extends Fragment {
     }
 
     private void readAllCategoryExpenses() {
-        Cursor cursor = dbHelper.getAllCategoryExpenses(loggedInUser);
+        String yearSelected = spTotalExpensesYear.getSelectedItem().toString();
+        String monthSelected = spTotalExpensesMonth.getSelectedItem().toString();
+        Cursor cursor = dbHelper.getYearMonthCategoryExpenses(loggedInUser, yearSelected, monthSelected);
         if (cursor.getCount() == 0) {
             Toast.makeText(getActivity(), "No Data Available", Toast.LENGTH_SHORT).show();
         } else {
             while (cursor.moveToNext()) {
                 totalExpenseCategoryList.add(cursor.getString(0));
-                Log.d("myerror", cursor.getString(0));
                 totalExpenseExpensesList.add(Float.toString(cursor.getFloat(1)));
-                Log.d("myerror", cursor.getString(1));
                 totalExpenseProfitsList.add("0");
+            }
+        }
+    }
+
+    private void updateRecyclerViewData() {
+        readAllCategoryExpenses();
+        readAllCategoryProfits();
+        totalExpensesAdapter.notifyDataSetChanged();
+    }
+
+    private void readAllYearMonthCategoryExpenses() {
+        String yearSelected = spTotalExpensesYear.getSelectedItem().toString();
+        String monthSelected = spTotalExpensesMonth.getSelectedItem().toString();
+        Cursor cursor = dbHelper.getYearMonthCategoryExpenses(loggedInUser, yearSelected, monthSelected);
+
+        if (cursor.getCount() == 0) {
+            Toast.makeText(getActivity(), "No Data Available", Toast.LENGTH_SHORT).show();
+        } else {
+            while (cursor.moveToNext()) {
+                totalYearMonthCategories.add(cursor.getString(0));
+                totalYearMonthExpenses.add(Float.toString(cursor.getFloat(1)));
             }
         }
     }
@@ -185,8 +217,6 @@ public class TotalExpensesFragment extends Fragment {
             totalExpenses = cursor.getFloat(0);
         }
 
-        Log.d("total", Float.toString(totalExpenses));
-
         return totalExpenses;
     }
 
@@ -202,9 +232,48 @@ public class TotalExpensesFragment extends Fragment {
             totalProfits = cursor.getFloat(0);
         }
 
-        Log.d("total", Float.toString(totalProfits));
-
         return totalProfits;
+    }
+
+    private void setupPieChartExpenses() {
+        pieChartTotalExpenses.setDrawHoleEnabled(true);
+        pieChartTotalExpenses.setUsePercentValues(true);
+        pieChartTotalExpenses.setEntryLabelTextSize(12);
+        pieChartTotalExpenses.setEntryLabelColor(Color.BLACK);
+        pieChartTotalExpenses.setCenterTextSize(20);
+        pieChartTotalExpenses.getDescription().setEnabled(false);
+        pieChartTotalExpenses.getLegend().setEnabled(false);
+    }
+
+    private void loadPieChartExpenses() {
+        ArrayList<PieEntry> chartEntries = new ArrayList<>();
+
+        readAllYearMonthCategoryExpenses();
+
+        for (int i = 0; i < totalYearMonthExpenses.size(); i++) {
+            String label = totalYearMonthCategories.get(i);
+            chartEntries.add(new PieEntry(Float.parseFloat(totalYearMonthExpenses.get(i)) * -1,
+                    label));
+        }
+
+        PieDataSet dataSet = new PieDataSet(chartEntries, "Expenses");
+
+        dataSet.setColors(R.color.orange_1, R.color.light_orange, R.color.blue_1, R.color.blue_2);
+
+        PieData data = new PieData(dataSet);
+        data.setDrawValues(true);
+        data.setValueFormatter(new PercentFormatter(pieChartTotalExpenses));
+        data.setValueTextSize(12f);
+        data.setValueTextColor(Color.BLACK);
+
+        if (totalYearMonthExpenses.size() != 0) {
+            pieChartTotalExpenses.setCenterText("Total Expenses");
+        } else {
+            pieChartTotalExpenses.setCenterText("No Data Available");
+        }
+
+        pieChartTotalExpenses.setData(data);
+        pieChartTotalExpenses.invalidate();
     }
 
     private void populateYearSpinner() {
@@ -234,8 +303,11 @@ public class TotalExpensesFragment extends Fragment {
         spTotalExpensesMonth.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                clearArrayLists();
                 tvTotalExpensesExpenses.setText("Expenses: " + Float.toString(getYearMonthTotalExpenses()));
                 tvTotalExpensesProfits.setText("Profits: " + Float.toString(getYearMonthTotalProfits()));
+                loadPieChartExpenses();
+                updateRecyclerViewData();
             }
 
             @Override
@@ -247,8 +319,11 @@ public class TotalExpensesFragment extends Fragment {
         spTotalExpensesYear.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                clearArrayLists();
                 tvTotalExpensesExpenses.setText("Expenses: " + Float.toString(getYearMonthTotalExpenses()));
                 tvTotalExpensesProfits.setText("Profits: " + Float.toString(getYearMonthTotalProfits()));
+                loadPieChartExpenses();
+                updateRecyclerViewData();
             }
 
             @Override
