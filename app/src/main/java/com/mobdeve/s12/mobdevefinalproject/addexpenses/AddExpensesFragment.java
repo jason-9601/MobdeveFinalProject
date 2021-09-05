@@ -138,8 +138,9 @@ public class AddExpensesFragment extends Fragment {
         this.rvAddExpenses = view.findViewById(R.id.rv_add_expenses);
         this.lmManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         this.rvAddExpenses.setLayoutManager(this.lmManager);
-        this.addExpensesAdapter = new AddExpensesAdapter(expenseTitleList, expenseYearList,
-                expenseMonthList, expenseDayList, expenseAmountList);
+        this.addExpensesAdapter = new AddExpensesAdapter(expenseIdList, expenseTitleList,
+                expenseYearList, expenseMonthList,
+                expenseDayList, expenseAmountList);
         this.rvAddExpenses.setAdapter(addExpensesAdapter);
     }
 
@@ -164,7 +165,6 @@ public class AddExpensesFragment extends Fragment {
     }
 
     private void readAllExpenseTable() {
-        // Cursor cursor = dbHelper.readAllExpenseTable();
         Cursor cursor = dbHelper.readAllUserExpenseTable(loggedInUser);
         if (cursor.getCount() == 0) {
             Toast.makeText(getActivity(), "No Data Available", Toast.LENGTH_SHORT).show();

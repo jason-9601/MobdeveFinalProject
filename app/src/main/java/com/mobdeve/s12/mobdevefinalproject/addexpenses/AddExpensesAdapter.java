@@ -15,13 +15,15 @@ import java.util.ArrayList;
 
 public class AddExpensesAdapter extends RecyclerView.Adapter<AddExpensesViewHolder> {
 
+    private ArrayList<String> expenseIdList;
     private ArrayList<String> expenseTitleList;
     private ArrayList<String> expenseYearList;
     private ArrayList<String> expenseMonthList;
     private ArrayList<String> expenseDayList;
     private ArrayList<String> expenseAmountList;
 
-    public AddExpensesAdapter(ArrayList<String> expenseTitleList,
+    public AddExpensesAdapter(ArrayList<String> expenseIdList,
+                              ArrayList<String> expenseTitleList,
                               ArrayList<String> expenseYearList,
                               ArrayList<String> expenseMonthList,
                               ArrayList<String> expenseDayList,

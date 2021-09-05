@@ -24,6 +24,7 @@ import com.mobdeve.s12.mobdevefinalproject.addexpenses.AddExpensesAdapter;
 import com.mobdeve.s12.mobdevefinalproject.database.DatabaseHelper;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -208,6 +209,12 @@ public class TotalExpensesFragment extends Fragment {
 
     private void populateYearSpinner() {
         List<String> yearsList = dbHelper.getYearsOfExpenses(loggedInUser);
+
+        // If user has no data, add current year to year spinner //
+        if (yearsList.size() == 0) {
+            String currentYear = Integer.toString(Calendar.getInstance().get(Calendar.YEAR));
+            yearsList.add(currentYear);
+        }
 
         spTotalExpensesYearAdapter = new ArrayAdapter<String>(
                 getActivity(), android.R.layout.simple_spinner_item, yearsList);
