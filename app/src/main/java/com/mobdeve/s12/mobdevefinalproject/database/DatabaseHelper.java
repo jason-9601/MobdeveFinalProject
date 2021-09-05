@@ -471,6 +471,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return yearsList;
     }
 
+    /* Delete an expense given a selected id */
+    public void deleteExpense(String id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        long result = db.delete(EXPENSE_TABLE, "id=?", new String[]{id});
+        if (result == -1) {
+            Toast.makeText(context, "Failed delete", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(context, "Deleted expense", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     /* Add user to user_table */
     public void addUser(String username, String password, String email) {
         SQLiteDatabase db = this.getWritableDatabase();

@@ -194,8 +194,10 @@ public class AddExpensesFragment extends Fragment {
         @Override
         public void onSwiped(@NonNull @NotNull RecyclerView.ViewHolder viewHolder, int direction) {
             String swidpedExpenseId = expenseList.get(viewHolder.getAdapterPosition()).getExpenseId();
+            dbHelper.deleteExpense(swidpedExpenseId);
             expenseList.remove(viewHolder.getAdapterPosition());
             addExpensesAdapter.notifyDataSetChanged();
+            setTotalAmountTextViews();
         }
     };
 
