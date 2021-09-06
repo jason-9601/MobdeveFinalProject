@@ -116,6 +116,9 @@ public class TotalExpensesFragment extends Fragment {
         setupPieChartExpenses();
         loadPieChartExpenses();
 
+        tvTotalExpensesExpenses.setText("Expenses: " + Float.toString(getYearMonthTotalExpenses()));
+        tvTotalExpensesProfits.setText("Profits: " + Float.toString(getYearMonthTotalProfits()));
+
         return view;
     }
 
@@ -258,7 +261,7 @@ public class TotalExpensesFragment extends Fragment {
 
         PieDataSet dataSet = new PieDataSet(chartEntries, "Expenses");
 
-        dataSet.setColors(R.color.orange_1, R.color.light_orange, R.color.blue_1, R.color.blue_2);
+        dataSet.setColors(R.color.orange_1, R.color.blue_1, R.color.light_orange, R.color.blue_2);
 
         PieData data = new PieData(dataSet);
         data.setDrawValues(true);

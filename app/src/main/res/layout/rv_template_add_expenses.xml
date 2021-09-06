@@ -22,7 +22,7 @@
             android:text="Bought some groceries"
             android:textColor="@color/black"
             android:textSize="14sp"
-            app:layout_constraintEnd_toStartOf="@+id/guideline4"
+            app:layout_constraintEnd_toStartOf="@+id/gl_before_number_add_expenses"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -48,11 +48,11 @@
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/guideline4"
+            app:layout_constraintStart_toStartOf="@+id/gl_before_number_add_expenses"
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline4"
+            android:id="@+id/gl_before_number_add_expenses"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
