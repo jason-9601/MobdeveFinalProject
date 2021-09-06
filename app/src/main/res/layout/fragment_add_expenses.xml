@@ -16,7 +16,7 @@
             android:id="@+id/tv_expenses_header"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
             android:fontFamily="@font/roboto"
             android:text="Expenses"
@@ -27,14 +27,15 @@
 
         <TextView
             android:id="@+id/tv_expenses_amount"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
             android:fontFamily="@font/roboto_black"
             android:text="5000"
             android:textColor="@color/white"
-            android:textSize="30sp"
+            android:textSize="25sp"
+            app:layout_constraintEnd_toStartOf="@+id/tv_add_expenses_header"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_add_expenses_header" />
 
@@ -44,7 +45,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:fontFamily="@font/roboto"
-            android:text="This week's totals"
+            android:text="Your Totals"
             android:textColor="@color/white"
             android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -53,15 +54,17 @@
 
         <TextView
             android:id="@+id/tv_profits_amount"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:layout_marginEnd="20dp"
+            android:layout_marginEnd="10dp"
             android:fontFamily="@font/roboto_black"
             android:text="2000"
+            android:textAlignment="textEnd"
             android:textColor="@color/white"
-            android:textSize="30sp"
+            android:textSize="25sp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tv_add_expenses_header"
             app:layout_constraintTop_toBottomOf="@+id/tv_add_expenses_header" />
 
         <TextView
@@ -69,7 +72,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:layout_marginEnd="20dp"
+            android:layout_marginEnd="10dp"
             android:fontFamily="@font/roboto"
             android:text="Profits"
             android:textColor="@color/white"

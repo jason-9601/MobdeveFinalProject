@@ -249,7 +249,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     /* Get all contents of expense_table of the selected user */
     public Cursor readAllUserExpenseTable(String username) {
         String query = "SELECT * FROM " + EXPENSE_TABLE + " WHERE " +
-                EXPENSE_COLUMN_USERNAME + "=?";
+                EXPENSE_COLUMN_USERNAME + "=?" +
+                " ORDER BY " +
+                EXPENSE_COLUMN_YEAR + " DESC," +
+                EXPENSE_COLUMN_MONTH + " DESC," +
+                EXPENSE_COLUMN_DAY + " DESC";
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = null;
