@@ -40,6 +40,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String EXPENSE_COLUMN_DAY      = "expense_day";
     private static final String EXPENSE_COLUMN_AMOUNT   = "expense_amount";
     private static final String EXPENSE_COLUMN_CATEGORY = "expense_category";
+    private static final String EXPENSE_COLUMN_FULLDATE = "expense_fulldate";
 
     // NOTES TABLE //
     private static final String NOTES_TABLE            = "notes_table";
@@ -91,7 +92,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         EXPENSE_COLUMN_DAY       + " TEXT, " +
                         EXPENSE_COLUMN_AMOUNT    + " DOUBLE, " +
                         EXPENSE_COLUMN_CATEGORY  + " TEXT, " +
-                        EXPENSE_COLUMN_USERNAME  + " TEXT" +
+                        EXPENSE_COLUMN_USERNAME  + " TEXT, " +
+                        EXPENSE_COLUMN_FULLDATE + " TEXT" +
                         ");";
 
         String queryCreateNotesTable =
@@ -140,28 +142,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     /* DATABASE FUNCTIONS */
 
-    /* Add expense to expense_table */
-    public void addExpense(String name, String year, String month, String day,
-                           double amount, String category) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues cv = new ContentValues();
-
-        cv.put(EXPENSE_COLUMN_NAME, name);
-        cv.put(EXPENSE_COLUMN_YEAR, year);
-        cv.put(EXPENSE_COLUMN_MONTH, month);
-        cv.put(EXPENSE_COLUMN_DAY, day);
-        cv.put(EXPENSE_COLUMN_AMOUNT, amount);
-        cv.put(EXPENSE_COLUMN_CATEGORY, category);
-
-        long result = db.insert(EXPENSE_TABLE, null, cv);
-
-        if (result == -1) {
-            Toast.makeText(context, "Failed Upload :(", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(context, "Expense successfully added :)", Toast.LENGTH_SHORT).show();
-        }
-    }
-
     /* Add expense to expense_table of a user */
     public void addUserExpense(String name, String year, String month, String day,
                            double amount, String category, String username) {
@@ -175,6 +155,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cv.put(EXPENSE_COLUMN_AMOUNT, amount);
         cv.put(EXPENSE_COLUMN_CATEGORY, category);
         cv.put(EXPENSE_COLUMN_USERNAME, username);
+        cv.put(EXPENSE_COLUMN_FULLDATE, convertToDate(year, month, day));
 
         long result = db.insert(EXPENSE_TABLE, null, cv);
 
@@ -183,6 +164,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         } else {
             Toast.makeText(context, "Expense successfully added :)", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    /* Convert year, month, day to YYYY-MM-DD string */
+    public String convertToDate(String year, String month, String day) {
+        String newMonth = month;
+        String newDay = day;
+
+        if (month.length() == 1) {
+            newMonth = "0" + month;
+        }
+
+        if (day.length() == 1) {
+            newDay = "0" + day;
+        }
+
+        String newDate = year + "-" + newMonth + "-" + newDay;
+
+        return newDate;
     }
 
     public void addUserNote(Notes note, String username){
@@ -250,10 +249,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public Cursor readAllUserExpenseTable(String username) {
         String query = "SELECT * FROM " + EXPENSE_TABLE + " WHERE " +
                 EXPENSE_COLUMN_USERNAME + "=?" +
-                " ORDER BY " +
-                EXPENSE_COLUMN_YEAR + " DESC," +
-                EXPENSE_COLUMN_MONTH + " DESC," +
-                EXPENSE_COLUMN_DAY + " DESC";
+                " ORDER BY date(" + EXPENSE_COLUMN_FULLDATE +
+                ") DESC";
+
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = null;
@@ -367,6 +365,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
+    /* Return a month as a number string, for example: "January" returns "1" */
     public String getIntegerMonth(String month) {
         String integerMonth = "";
 
