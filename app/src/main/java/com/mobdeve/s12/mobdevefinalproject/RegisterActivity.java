@@ -3,6 +3,7 @@ package com.mobdeve.s12.mobdevefinalproject;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,15 +13,19 @@ import com.mobdeve.s12.mobdevefinalproject.database.DatabaseHelper;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    EditText etRegisterUsername;
-    EditText etRegisterPassword;
-    EditText etRegisterEmail;
-    Button btnRegisterSubmit;
+    private DatabaseHelper dbHelper;
+
+    private EditText etRegisterUsername;
+    private EditText etRegisterPassword;
+    private EditText etRegisterEmail;
+    private Button btnRegisterSubmit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        dbHelper = new DatabaseHelper(RegisterActivity.this);
 
         etRegisterUsername = findViewById(R.id.et_register_username);
         etRegisterPassword = findViewById(R.id.et_register_password);
@@ -35,12 +40,16 @@ public class RegisterActivity extends AppCompatActivity {
                 if (inputIsNotComplete()) {
                     Toast.makeText(getApplicationContext(), "Please complete fields", Toast.LENGTH_SHORT).show();
                 } else {
-                    dbHelper.addUser(etRegisterUsername.getText().toString().trim(),
-                            etRegisterPassword.getText().toString().trim(),
-                            etRegisterEmail.getText().toString().trim());
+                    if (invalidInputs()) {
 
-                    // Go back to login activity if register is successful //
-                    finish();
+                    } else {
+                        dbHelper.addUser(etRegisterUsername.getText().toString().trim(),
+                                etRegisterPassword.getText().toString().trim(),
+                                etRegisterEmail.getText().toString().trim());
+
+                        // Go back to login activity if register is successful //
+                        finish();
+                    }
                 }
             }
         });
@@ -55,5 +64,20 @@ public class RegisterActivity extends AppCompatActivity {
         } else {
             return false;
         }
+    }
+
+    // Return true if inputs are valid. Checks if user exists and if email is in a correct format //
+    public boolean invalidInputs() {
+        if (dbHelper.userExists(etRegisterUsername.getText().toString().trim())) {
+            Toast.makeText(RegisterActivity.this, "Username already exists", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+
+        if (!Patterns.EMAIL_ADDRESS.matcher(etRegisterEmail.getText().toString().trim()).matches()) {
+            Toast.makeText(RegisterActivity.this, "Invalid email format", Toast.LENGTH_SHORT).show();
+            return true;
+        }
+
+        return false;
     }
 }

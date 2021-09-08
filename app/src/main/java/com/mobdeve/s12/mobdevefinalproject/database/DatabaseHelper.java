@@ -541,6 +541,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    /* Return true if user exists in the database, false otherwise */
+    public boolean userExists(String username) {
+        String query = "SELECT * FROM " + USER_TABLE + " WHERE username=?";
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = null;
+        if (db != null) {
+            cursor = db.rawQuery(query, new String[] {username});
+        }
+
+        // Match Found //
+        if (cursor.getCount() > 0) {
+            return true;
+        }
+
+        return false;
+    }
+
     /* Function for login. Return true if username password match exists */
     public boolean loginUser(String username, String password) {
         String query = "SELECT * FROM " + USER_TABLE + " WHERE username=?" +
