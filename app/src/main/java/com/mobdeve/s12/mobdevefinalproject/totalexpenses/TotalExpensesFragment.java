@@ -1,8 +1,10 @@
 package com.mobdeve.s12.mobdevefinalproject.totalexpenses;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -31,6 +33,7 @@ import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.mobdeve.s12.mobdevefinalproject.R;
 import com.mobdeve.s12.mobdevefinalproject.addexpenses.AddExpensesAdapter;
+import com.mobdeve.s12.mobdevefinalproject.addexpenses.Expenses;
 import com.mobdeve.s12.mobdevefinalproject.database.DatabaseHelper;
 
 import java.util.ArrayList;
@@ -137,7 +140,7 @@ public class TotalExpensesFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
             case R.id.total_expenses_menu_email:
-                Toast.makeText(getActivity(), "Email Sent", Toast.LENGTH_SHORT).show();
+                emailTotalExpenses();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -356,6 +359,48 @@ public class TotalExpensesFragment extends Fragment {
                
             }
         });
+    }
+
+    private void emailTotalExpenses() {
+        String emailSubject = loggedInUser + "'s Expenses";
+        String emailBody = "Hello " + loggedInUser + "! " +
+                "Here is the list of your current expenses :)\n\n";
+
+        Cursor cursor = dbHelper.readAllUserExpenseTable(loggedInUser);
+        if (cursor.getCount() == 0) {
+            emailBody = "You have no expenses yet";
+        } else {
+            while (cursor.moveToNext()) {
+                String expenseId = cursor.getString(0);
+                String expenseTitle = cursor.getString(1);
+                String expenseYear = cursor.getString(2);
+                String expenseMonth = cursor.getString(3);
+                String expenseDay = cursor.getString(4);
+                String expenseAmount = cursor.getString(5);
+                String expenseCategory = cursor.getString(6);
+
+                emailBody = emailBody +
+                            expenseTitle + " " +
+                            expenseYear + "/" + expenseMonth + "/" + expenseDay + " " +
+                            expenseAmount + "\n";
+            }
+        }
+
+        Intent selectorIntent = new Intent(Intent.ACTION_SENDTO);
+        selectorIntent.setData(Uri.parse("mailto:"));
+
+        Intent emailIntent = new Intent(Intent.ACTION_SEND);
+        emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[] {"your@email.com"});
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, emailSubject);
+        emailIntent.putExtra(Intent.EXTRA_TEXT, emailBody);
+
+        emailIntent.setSelector(selectorIntent);
+
+        if (emailIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+            getActivity().startActivity(Intent.createChooser(emailIntent, "Your total expenses"));
+        } else {
+            Toast.makeText(getActivity(), "We cannot find any email applications", Toast.LENGTH_SHORT);
+        }
     }
 
 }
