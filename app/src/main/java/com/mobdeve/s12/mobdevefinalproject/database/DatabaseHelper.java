@@ -497,7 +497,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 
         if (cursor.getCount() == 0) {
-            Toast.makeText(context, "No Data Available", Toast.LENGTH_SHORT).show();
+            // Toast.makeText(context, "No Data Available", Toast.LENGTH_SHORT).show();
         } else {
             while (cursor.moveToNext()) {
                 yearsList.add(cursor.getString(0));

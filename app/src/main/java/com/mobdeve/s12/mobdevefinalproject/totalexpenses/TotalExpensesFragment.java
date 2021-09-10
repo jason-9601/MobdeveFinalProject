@@ -12,6 +12,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -119,7 +122,26 @@ public class TotalExpensesFragment extends Fragment {
         tvTotalExpensesExpenses.setText("Expenses: " + Float.toString(getYearMonthTotalExpenses()));
         tvTotalExpensesProfits.setText("Profits: " + Float.toString(getYearMonthTotalProfits()));
 
+        setHasOptionsMenu(true);
+
         return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.total_expenses_menu, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()) {
+            case R.id.total_expenses_menu_email:
+                Toast.makeText(getActivity(), "Email Sent", Toast.LENGTH_SHORT).show();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     private void initRecyclerView(View view) {
@@ -162,7 +184,7 @@ public class TotalExpensesFragment extends Fragment {
         String monthSelected = spTotalExpensesMonth.getSelectedItem().toString();
         Cursor cursor = dbHelper.getYearMonthCategoryProfits(loggedInUser, yearSelected, monthSelected);
         if (cursor.getCount() == 0) {
-            Toast.makeText(getActivity(), "No Data Available", Toast.LENGTH_SHORT).show();
+            // Toast.makeText(getActivity(), "No Data Available", Toast.LENGTH_SHORT).show();
         } else {
             while (cursor.moveToNext()) {
                 totalExpenseCategoryList.add(cursor.getString(0));
@@ -177,7 +199,7 @@ public class TotalExpensesFragment extends Fragment {
         String monthSelected = spTotalExpensesMonth.getSelectedItem().toString();
         Cursor cursor = dbHelper.getYearMonthCategoryExpenses(loggedInUser, yearSelected, monthSelected);
         if (cursor.getCount() == 0) {
-            Toast.makeText(getActivity(), "No Data Available", Toast.LENGTH_SHORT).show();
+            // Toast.makeText(getActivity(), "No Data Available", Toast.LENGTH_SHORT).show();
         } else {
             while (cursor.moveToNext()) {
                 totalExpenseCategoryList.add(cursor.getString(0));
@@ -199,7 +221,7 @@ public class TotalExpensesFragment extends Fragment {
         Cursor cursor = dbHelper.getYearMonthCategoryExpenses(loggedInUser, yearSelected, monthSelected);
 
         if (cursor.getCount() == 0) {
-            Toast.makeText(getActivity(), "No Data Available", Toast.LENGTH_SHORT).show();
+            // Toast.makeText(getActivity(), "No Data Available", Toast.LENGTH_SHORT).show();
         } else {
             while (cursor.moveToNext()) {
                 totalYearMonthCategories.add(cursor.getString(0));

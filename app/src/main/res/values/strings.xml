@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MobdeveFinalProject</string>
+    <string name="app_name">PlanX</string>
     <string-array name="expenses_categories_array">
         <item>Food</item>
         <item>Utilities</item>
