@@ -24,46 +24,48 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final int DB_VERSION = 1;
 
     // USER TABLE //
-    private static final String USER_TABLE           = "user_table";
-    private static final String USER_COLUMN_ID       = "id";
+    private static final String USER_TABLE = "user_table";
+    private static final String USER_COLUMN_ID = "id";
     private static final String USER_COLUMN_USERNAME = "username";
     private static final String USER_COLUMN_PASSWORD = "password";
-    private static final String USER_COLUMN_EMAIL    = "email";
+    private static final String USER_COLUMN_EMAIL = "email";
 
     // EXPENSE TABLE //
-    private static final String EXPENSE_TABLE           = "expense_table";
-    private static final String EXPENSE_COLUMN_ID       = "id";
+    private static final String EXPENSE_TABLE = "expense_table";
+    private static final String EXPENSE_COLUMN_ID = "id";
     private static final String EXPENSE_COLUMN_USERNAME = "username";
-    private static final String EXPENSE_COLUMN_NAME     = "expense_name";
-    private static final String EXPENSE_COLUMN_YEAR     = "expense_year";
-    private static final String EXPENSE_COLUMN_MONTH    = "expense_month";
-    private static final String EXPENSE_COLUMN_DAY      = "expense_day";
-    private static final String EXPENSE_COLUMN_AMOUNT   = "expense_amount";
+    private static final String EXPENSE_COLUMN_NAME = "expense_name";
+    private static final String EXPENSE_COLUMN_YEAR = "expense_year";
+    private static final String EXPENSE_COLUMN_MONTH = "expense_month";
+    private static final String EXPENSE_COLUMN_DAY = "expense_day";
+    private static final String EXPENSE_COLUMN_AMOUNT = "expense_amount";
     private static final String EXPENSE_COLUMN_CATEGORY = "expense_category";
     private static final String EXPENSE_COLUMN_FULLDATE = "expense_fulldate";
 
     // NOTES TABLE //
-    private static final String NOTES_TABLE            = "notes_table";
-    private static final String NOTES_ID               = "id";
-    private static final String NOTES_USERNAME         = "username";
-    private static final String NOTES_TEXT             = "notes_text";
+    private static final String NOTES_TABLE = "notes_table";
+    private static final String NOTES_ID = "id";
+    private static final String NOTES_USERNAME = "username";
+    private static final String NOTES_TEXT = "notes_text";
     private static final String NOTES_BACKGROUND_COLOR = "notes_background_color";
-    private static final String NOTES_FONT_COLOR       = "notes_font_color";
+    private static final String NOTES_FONT_COLOR = "notes_font_color";
 
     // TO DO TABLE //
-    private static final String TODO_TABLE                  = "todo_table";
-    private static final String TODO_ID                     = "todo_id";
-    private static final String TODO_USERNAME               = "todo_username";
-    private static final String TODO_TITLE                  = "todo_title";
-    private static final String TODO_YEAR                   = "todo_year";
-    private static final String TODO_MONTH                  = "todo_month";
-    private static final String TODO_DAY                    = "todo_day";
-    private static final String TODO_ADD_SPECIFIC_TIME      = "todo_add_specific_time";
-    private static final String TODO_SET_REMINDER           = "todo_set_reminder";
-    private static final String TODO_ACTIVITY_TIME          = "todo_activity_time";
-    private static final String TODO_REMINDER_INTERVALS     = "todo_reminder_intervals";
+    private static final String TODO_TABLE = "todo_table";
+    private static final String TODO_ID = "todo_id";
+    private static final String TODO_USERNAME = "todo_username";
+    private static final String TODO_TITLE = "todo_title";
+    private static final String TODO_YEAR = "todo_year";
+    private static final String TODO_MONTH = "todo_month";
+    private static final String TODO_DAY = "todo_day";
+    private static final String TODO_ADD_SPECIFIC_TIME = "todo_add_specific_time";
+    private static final String TODO_SET_REMINDER = "todo_set_reminder";
+    private static final String TODO_ACTIVITY_TIME = "todo_activity_time";
+    private static final String TODO_REMINDER_INTERVALS = "todo_reminder_intervals";
     private static final String TODO_REMINDER_STARTING_TIME = "todo_reminder_starting_time";
-    private static final String TODO_PRIORITY               = "todo_priority";
+    private static final String TODO_PRIORITY = "todo_priority";
+    private static final String TODO_HOUR = "todo_hour";
+    private static final String TODO_MINUTE = "todo_minute";
 
     public DatabaseHelper(@Nullable Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -75,51 +77,55 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         // Create user_table //
         String queryCreateUserTable =
-                "CREATE TABLE " + USER_TABLE  +
+                "CREATE TABLE " + USER_TABLE +
                         " (" + USER_COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                        USER_COLUMN_USERNAME  + " TEXT, " +
-                        USER_COLUMN_PASSWORD  + " TEXT, " +
-                        USER_COLUMN_EMAIL     + " TEXT" +
+                        USER_COLUMN_USERNAME + " TEXT, " +
+                        USER_COLUMN_PASSWORD + " TEXT, " +
+                        USER_COLUMN_EMAIL + " TEXT" +
                         ");";
 
         // Create expense_table //
         String queryCreateExpenseTable =
-                "CREATE TABLE " + EXPENSE_TABLE  +
+                "CREATE TABLE " + EXPENSE_TABLE +
                         " (" + EXPENSE_COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                        EXPENSE_COLUMN_NAME      + " TEXT, " +
-                        EXPENSE_COLUMN_YEAR      + " TEXT, " +
-                        EXPENSE_COLUMN_MONTH     + " TEXT, " +
-                        EXPENSE_COLUMN_DAY       + " TEXT, " +
-                        EXPENSE_COLUMN_AMOUNT    + " DOUBLE, " +
-                        EXPENSE_COLUMN_CATEGORY  + " TEXT, " +
-                        EXPENSE_COLUMN_USERNAME  + " TEXT, " +
+                        EXPENSE_COLUMN_NAME + " TEXT, " +
+                        EXPENSE_COLUMN_YEAR + " TEXT, " +
+                        EXPENSE_COLUMN_MONTH + " TEXT, " +
+                        EXPENSE_COLUMN_DAY + " TEXT, " +
+                        EXPENSE_COLUMN_AMOUNT + " DOUBLE, " +
+                        EXPENSE_COLUMN_CATEGORY + " TEXT, " +
+                        EXPENSE_COLUMN_USERNAME + " TEXT, " +
                         EXPENSE_COLUMN_FULLDATE + " TEXT" +
                         ");";
 
+        // Create notes_table //
         String queryCreateNotesTable =
                 "CREATE TABLE " + NOTES_TABLE +
-                        " (" + NOTES_ID        + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                        NOTES_USERNAME         + " TEXT, " +
-                        NOTES_TEXT             + " TEXT, " +
+                        " (" + NOTES_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        NOTES_USERNAME + " TEXT, " +
+                        NOTES_TEXT + " TEXT, " +
                         NOTES_BACKGROUND_COLOR + " INT, " +
-                        NOTES_FONT_COLOR       + " INT" +
+                        NOTES_FONT_COLOR + " INT" +
                         ");";
 
+        // Create todo_table //
         String queryCreateToDoTable =
                 "CREATE TABLE " + TODO_TABLE +
-                " (" + TODO_ID                     + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                       TODO_USERNAME               + " TEXT, " +
-                       TODO_TITLE                  + " TEXT, " +
-                       TODO_YEAR                   + " TEXT, " +
-                       TODO_MONTH                  + " TEXT, " +
-                       TODO_DAY                    + " TEXT, " +
-                       TODO_ADD_SPECIFIC_TIME      + " BOOLEAN, " +
-                       TODO_SET_REMINDER           + " BOOLEAN, " +
-                       TODO_ACTIVITY_TIME          + " TEXT, " +
-                       TODO_REMINDER_INTERVALS     + " TEXT, " +
-                       TODO_REMINDER_STARTING_TIME + " TEXT, " +
-                       TODO_PRIORITY + " INT" +
-                        ");" ;
+                        " (" + TODO_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                        TODO_USERNAME + " TEXT, " +
+                        TODO_TITLE + " TEXT, " +
+                        TODO_YEAR + " TEXT, " +
+                        TODO_MONTH + " TEXT, " +
+                        TODO_DAY + " TEXT, " +
+                        TODO_ADD_SPECIFIC_TIME + " BOOLEAN, " +
+                        TODO_SET_REMINDER + " BOOLEAN, " +
+                        TODO_ACTIVITY_TIME + " TEXT, " +
+                        TODO_REMINDER_INTERVALS + " TEXT, " +
+                        TODO_REMINDER_STARTING_TIME + " TEXT, " +
+                        TODO_PRIORITY + " INT, " +
+                        TODO_HOUR + " TEXT, " +
+                        TODO_MINUTE + " TEXT" +
+                        ");";
 
         // Execute queries //
         db.execSQL(queryCreateUserTable);
@@ -144,7 +150,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     /* Add expense to expense_table of a user */
     public void addUserExpense(String name, String year, String month, String day,
-                           double amount, String category, String username) {
+                               double amount, String category, String username) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
 
@@ -184,7 +190,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return newDate;
     }
 
-    public void addUserNote(String noteText, int noteBackgroundColor, int noteFontColor, String username){
+    public void addUserNote(String noteText, int noteBackgroundColor, int noteFontColor, String username) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
 
@@ -208,7 +214,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public void addUserTodo(String username, String title, String year, String month, String day,
                             boolean add_specific_time, boolean set_reminder, String time,
-                            String intervals, String starting_time, int priority){
+                            String intervals, String starting_time, int priority, String hour, String minute) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
 
@@ -223,6 +229,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cv.put(TODO_REMINDER_INTERVALS, intervals);
         cv.put(TODO_REMINDER_STARTING_TIME, starting_time);
         cv.put(TODO_PRIORITY, priority);
+        cv.put(TODO_HOUR, hour);
+        cv.put(TODO_MINUTE, minute);
 
         long result = db.insert(TODO_TABLE, null, cv);
 
@@ -274,31 +282,31 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         Cursor cursor = null;
         if (db != null) {
-            cursor = db.rawQuery(query, new String[] {username});
+            cursor = db.rawQuery(query, new String[]{username});
         }
         return cursor;
     }
 
-    public Cursor readAllUserNotesTable(String username){
+    public Cursor readAllUserNotesTable(String username) {
         String query = "SELECT * FROM " + NOTES_TABLE + " WHERE " +
                 NOTES_USERNAME + "=?";
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = null;
         if (db != null) {
-            cursor = db.rawQuery(query, new String[] {username});
+            cursor = db.rawQuery(query, new String[]{username});
         }
         return cursor;
     }
 
-    public Cursor readAllUserTodoTable(String username){
+    public Cursor readAllUserTodoTable(String username) {
         String query = "SELECT * FROM " + TODO_TABLE + " WHERE " +
                 TODO_USERNAME + "=?";
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = null;
         if (db != null) {
-            cursor = db.rawQuery(query, new String[] {username});
+            cursor = db.rawQuery(query, new String[]{username});
         }
         return cursor;
     }
@@ -326,7 +334,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         Cursor cursor = null;
         if (db != null) {
-            cursor = db.rawQuery(query, new String[] {username});
+            cursor = db.rawQuery(query, new String[]{username});
         }
         return cursor;
     }
@@ -340,7 +348,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         Cursor cursor = null;
         if (db != null) {
-            cursor = db.rawQuery(query, new String[] {username});
+            cursor = db.rawQuery(query, new String[]{username});
         }
         return cursor;
     }
@@ -358,7 +366,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         Cursor cursor = null;
         if (db != null) {
-            cursor = db.rawQuery(query, new String[] {username, year, getIntegerMonth(month)});
+            cursor = db.rawQuery(query, new String[]{username, year, getIntegerMonth(month)});
         }
 
         return cursor;
@@ -377,7 +385,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         Cursor cursor = null;
         if (db != null) {
-            cursor = db.rawQuery(query, new String[] {username, year, getIntegerMonth(month)});
+            cursor = db.rawQuery(query, new String[]{username, year, getIntegerMonth(month)});
         }
 
         return cursor;
@@ -387,7 +395,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public String getIntegerMonth(String month) {
         String integerMonth = "";
 
-        switch(month) {
+        switch (month) {
             case "January":
                 integerMonth = "1";
                 break;
@@ -440,7 +448,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         Cursor cursor = null;
         if (db != null) {
-            cursor = db.rawQuery(query, new String[] {username});
+            cursor = db.rawQuery(query, new String[]{username});
         }
         return cursor;
     }
@@ -458,7 +466,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         Cursor cursor = null;
         if (db != null) {
-            cursor = db.rawQuery(query, new String[] {username, year, getIntegerMonth(month)});
+            cursor = db.rawQuery(query, new String[]{username, year, getIntegerMonth(month)});
         }
 
         return cursor;
@@ -477,7 +485,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         Cursor cursor = null;
         if (db != null) {
-            cursor = db.rawQuery(query, new String[] {username, year, getIntegerMonth(month)});
+            cursor = db.rawQuery(query, new String[]{username, year, getIntegerMonth(month)});
         }
 
         return cursor;
@@ -494,7 +502,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         Cursor cursor = null;
         if (db != null) {
-            cursor = db.rawQuery(query, new String[] {username});
+            cursor = db.rawQuery(query, new String[]{username});
         }
         return cursor;
     }
@@ -511,7 +519,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         Cursor cursor = null;
         if (db != null) {
-            cursor = db.rawQuery(query, new String[] {username});
+            cursor = db.rawQuery(query, new String[]{username});
         }
 
         if (cursor.getCount() == 0) {
@@ -577,7 +585,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         Cursor cursor = null;
         if (db != null) {
-            cursor = db.rawQuery(query, new String[] {username});
+            cursor = db.rawQuery(query, new String[]{username});
         }
 
         // Match Found //
@@ -596,7 +604,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         Cursor cursor = null;
         if (db != null) {
-            cursor = db.rawQuery(query, new String[] {username, password});
+            cursor = db.rawQuery(query, new String[]{username, password});
         }
 
         // Match Found //

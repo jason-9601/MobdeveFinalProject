@@ -1,9 +1,11 @@
 package com.mobdeve.s12.mobdevefinalproject.todo;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -28,7 +30,13 @@ import com.mobdeve.s12.mobdevefinalproject.notes.NotesInput;
 import java.time.Clock;
 import java.util.Calendar;
 
-public class ToDoInput extends AppCompatActivity implements DatePickerDialog.OnDateSetListener{
+public class ToDoInput extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
+
+    private String loggedInUser;
+
+    // Shared preferences //
+    private SharedPreferences sp;
+    private SharedPreferences.Editor spEditor;
 
     private EditText etToDoTitle;
     private EditText etToDoDate;
@@ -47,6 +55,10 @@ public class ToDoInput extends AppCompatActivity implements DatePickerDialog.OnD
     private String monthSelected;
     private String daySelected;
 
+    private String hourSelected;
+    private String minuteSelected;
+    private String timeCombined;
+
     private boolean isAddSpecificTime;
     private boolean isSetReminders;
 
@@ -55,18 +67,25 @@ public class ToDoInput extends AppCompatActivity implements DatePickerDialog.OnD
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_todo_input);
 
-        this.etToDoTitle          = findViewById(R.id.et_todo_title);
-        this.etToDoDate           = findViewById(R.id.et_todo_date);
-        this.etToDoTime           = findViewById(R.id.et_todo_time);
-        this.etToDoPriority       = findViewById(R.id.et_todo_priority);
+        sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        spEditor = this.sp.edit();
 
-        this.addSpecificTime      = findViewById(R.id.cbs_add_specific_time);
-        this.setReminders         = findViewById(R.id.cbs_set_reminder);
+        // Print logged in user to Logcat for checking //
+        loggedInUser = sp.getString("KEY_USERNAME_LOGGED_IN", "N/A");
+        Log.d("Logged in user: ", loggedInUser);
 
-        this.reminderIntervals    = findViewById(R.id.sp_todo_reminder_intervals);
+        this.etToDoTitle = findViewById(R.id.et_todo_title);
+        this.etToDoDate = findViewById(R.id.et_todo_date);
+        this.etToDoTime = findViewById(R.id.et_todo_time);
+        this.etToDoPriority = findViewById(R.id.et_todo_priority);
+
+        this.addSpecificTime = findViewById(R.id.cbs_add_specific_time);
+        this.setReminders = findViewById(R.id.cbs_set_reminder);
+
+        this.reminderIntervals = findViewById(R.id.sp_todo_reminder_intervals);
         this.reminderStartingTime = findViewById(R.id.sp_todo_reminder_starting_time);
 
-        this.buttonAddToDo        = findViewById(R.id.btn_add_todo);
+        this.buttonAddToDo = findViewById(R.id.btn_add_todo);
 
         this.isAddSpecificTime = true;
         this.isSetReminders = true;
@@ -88,23 +107,20 @@ public class ToDoInput extends AppCompatActivity implements DatePickerDialog.OnD
             }
         });
 
-        /*
         etToDoTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showTimePicker();
             }
         });
-        */
 
         this.addSpecificTime.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if(b){
+                if (b) {
                     etToDoTime.setEnabled(true);
                     isAddSpecificTime = true;
-                }
-                else{
+                } else {
                     etToDoTime.setEnabled(false);
                     isAddSpecificTime = false;
                 }
@@ -114,7 +130,7 @@ public class ToDoInput extends AppCompatActivity implements DatePickerDialog.OnD
         this.setReminders.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if(b){
+                if (b) {
                     reminderIntervals.setEnabled(true);
                     reminderStartingTime.setEnabled(true);
 
@@ -122,8 +138,7 @@ public class ToDoInput extends AppCompatActivity implements DatePickerDialog.OnD
                     reminderStartingTime.setSelection(0);
 
                     isSetReminders = true;
-                }
-                else{
+                } else {
                     reminderIntervals.setEnabled(false);
                     reminderStartingTime.setEnabled(false);
 
@@ -138,43 +153,29 @@ public class ToDoInput extends AppCompatActivity implements DatePickerDialog.OnD
         this.buttonAddToDo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                boolean isAllFilled = true;
-                //boolean isAllFilled = isAllFilled();
-                if(isAllFilled)
-                {
+                if (inputIsNotComplete()) {
+                    Toast.makeText(getApplicationContext(), "Please complete all fields", Toast.LENGTH_SHORT).show();
+                } else {
                     Intent intent = new Intent();
                     addToDatabase();
                     setResult(Activity.RESULT_OK, intent);
                     finish();
                 }
-                else
-                {
-                    Toast.makeText(getApplicationContext(), "Please complete all fields", Toast.LENGTH_SHORT).show();
-                }
             }
         });
     }
 
-    private void addToDatabase(){
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        SharedPreferences.Editor spEditor = sp.edit();
-
-        // Print logged in user to Logcat for checking //
-        String loggedInUser = sp.getString("KEY_USERNAME_LOGGED_IN", "N/A");
-        Log.d("Logged in user: ", loggedInUser);
-
+    private void addToDatabase() {
         DatabaseHelper dbHelper = new DatabaseHelper(ToDoInput.this);
 
         String title = etToDoTitle.getText().toString();
-        String time = etToDoTime.getText().toString();
         String intervals = reminderIntervals.getSelectedItem().toString();
         String starting_time = reminderStartingTime.getSelectedItem().toString();
         int priority = Integer.parseInt(etToDoPriority.getText().toString());
 
-        dbHelper.addUserTodo(loggedInUser,title,yearSelected, monthSelected, daySelected,
-                isAddSpecificTime,isSetReminders, time, intervals, starting_time,
-                priority);
+        dbHelper.addUserTodo(loggedInUser, title, yearSelected, monthSelected, daySelected,
+                isAddSpecificTime, isSetReminders, timeCombined, intervals, starting_time,
+                priority, hourSelected, minuteSelected);
     }
 
     private void showDatePicker() {
@@ -186,44 +187,40 @@ public class ToDoInput extends AppCompatActivity implements DatePickerDialog.OnD
         datePicker.show();
     }
 
-    private void showTimePicker(){
-
-
-        TimePicker timePicker = new TimePicker(this);
-        String ampm;
-
-
-        int hour = timePicker.getHour();
-        int minute = timePicker.getMinute();
-
-        if(hour > 12){
-            ampm = "PM";
-            hour -= 12;
-        }
-        else{
-            ampm = "AM";
-        }
-
-        etToDoTime.setText(hour + ":" + minute + " " + ampm);
+    private void showTimePicker() {
+        DialogFragment timeSelector = new TimeSelectorFragment();
+        timeSelector.show(getSupportFragmentManager(), "time picker");
     }
 
-    private boolean isAllFilled(){
-
-        if(etToDoTitle.getText().toString().length() != 0
-        && etToDoDate.getText().toString().length()  != 0
-        && etToDoTime.getText().toString().length()  != 0
-        && etToDoPriority.getText().toString().length() != 0)
+    // Return true if at least one of the input fields is empty //
+    public boolean inputIsNotComplete() {
+        if (etToDoTitle.getText().toString().trim().length() == 0 ||
+                etToDoPriority.getText().toString().trim().length() == 0 ||
+                yearSelected.length() == 0 ||
+                monthSelected.length() == 0 ||
+                daySelected.length() == 0 ||
+                hourSelected.length() == 0 ||
+                minuteSelected.length() == 0) {
             return true;
-
-        return false;
+        } else {
+            return false;
+        }
     }
 
     @Override
     public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-        etToDoDate.setHint(Integer.toString(year) + "/" + Integer.toString(month) + "/" + Integer.toString(day));
+        etToDoDate.setHint(Integer.toString(year) + "/" + Integer.toString(month + 1) + "/" + Integer.toString(day));
         this.yearSelected = Integer.toString(year);
-        this.monthSelected = Integer.toString(month);
+        this.monthSelected = Integer.toString(month + 1);
         this.daySelected = Integer.toString(day);
+    }
+
+    @Override
+    public void onTimeSet(TimePicker view, int hour, int minute) {
+        etToDoTime.setHint(Integer.toString(hour) + ":" + Integer.toString(minute));
+        this.hourSelected = Integer.toString(hour);
+        this.minuteSelected = Integer.toString(minute);
+        this.timeCombined = Integer.toString(hour) + ":" + Integer.toString(minute);
     }
 
 }
