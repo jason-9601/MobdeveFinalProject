@@ -27,6 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:fontFamily="@font/roboto_black"
+            android:textColor="@color/black"
             android:text="@string/Sample_Time"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/iv_time"
@@ -52,7 +53,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
-            android:fontFamily="sans-serif-light"
+            android:fontFamily="@font/roboto_light"
+            android:textColor="@color/black"
             android:text="@string/Sample_Text"
             android:textAlignment="center"
             android:textSize="18sp"
@@ -74,7 +76,7 @@
             android:layout_marginTop="15dp"
             app:layout_constraintStart_toStartOf="@+id/gl_20"
             app:layout_constraintTop_toBottomOf="@+id/tv_todo_title"
-            app:srcCompat="@android:drawable/ic_menu_my_calendar" />
+            app:srcCompat="@drawable/ic_calendar_black" />
 
         <TextView
             android:id="@+id/tv_todo_date"
@@ -82,6 +84,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:fontFamily="@font/roboto_black"
+            android:textColor="@color/black"
             android:text="@string/Sample_Date"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/iv_calendar"
@@ -96,7 +99,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/gl_60"
             app:layout_constraintTop_toBottomOf="@+id/tv_todo_title"
-            app:srcCompat="@android:drawable/ic_lock_idle_alarm" />
+            app:srcCompat="@drawable/ic_clock_black" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_reminders"
@@ -107,10 +110,10 @@
             android:focusable="auto"
             app:borderWidth="2dp"
             app:fabCustomSize="40dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/cl_priority"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/tv_todo_title"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/cl_priority"
             app:maxImageSize="25dp"
             app:srcCompat="@drawable/megaphone_icon_301"
             tools:borderWidth="2dp" />
@@ -137,11 +140,17 @@
 
             <TextView
                 android:id="@+id/tv_priority"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-condensed"
+                android:fontFamily="@font/roboto_black"
+                android:shadowColor="@color/black"
+                android:shadowDx="1.5"
+                android:shadowDy="1.3"
+                android:shadowRadius="1.6"
                 android:text="100"
-                android:textSize="18sp"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="20sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
