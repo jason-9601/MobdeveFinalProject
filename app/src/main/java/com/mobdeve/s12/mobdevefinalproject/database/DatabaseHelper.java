@@ -113,7 +113,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                        TODO_YEAR                   + " TEXT, " +
                        TODO_MONTH                  + " TEXT, " +
                        TODO_DAY                    + " TEXT, " +
-                       TODO_ADD_SPECIFIC_TIME      + " BOOLEAN, " +
+                       TODO_ADD_SPECIFIC_TIME      + " INTEGER, " +
                        TODO_SET_REMINDER           + " BOOLEAN, " +
                        TODO_ACTIVITY_TIME          + " TEXT, " +
                        TODO_REMINDER_INTERVALS     + " TEXT, " +
@@ -230,6 +230,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             Toast.makeText(context, "Failed Upload :(", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(context, "Todo successfully added :)", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /* Set boolean value of To Do reminder of given id */
+    public void setToDoReminder(String id, int isReminderNotified) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+
+        cv.put(TODO_SET_REMINDER, isReminderNotified);
+
+        Log.d("setToDoReminder", id + " ");
+        Log.d("setToDoReminder", Integer.toString(isReminderNotified));
+
+        long result = db.update(TODO_TABLE, cv, TODO_ID + "=?", new String[]{id});
+        if (result == -1) {
+            Toast.makeText(context, "Failed Update", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(context, "Updated Todo Reminder to: " + Integer.toString(isReminderNotified), Toast.LENGTH_SHORT).show();
         }
     }
 
