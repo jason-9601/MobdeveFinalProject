@@ -110,8 +110,8 @@ public class NotesInput extends AppCompatActivity {
         Log.d("Logged in user: ", loggedInUser);
 
         DatabaseHelper dbHelper = new DatabaseHelper(NotesInput.this);
-        Notes note = new Notes(notesInput.getText().toString(), fontColorInt, backgroundColorInt);
-        dbHelper.addUserNote(note, loggedInUser);
+        dbHelper.addUserNote(notesInput.getText().toString(), backgroundColorInt,
+                fontColorInt, loggedInUser);
     }
 }
 

@@ -184,13 +184,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return newDate;
     }
 
-    public void addUserNote(Notes note, String username){
+    public void addUserNote(String noteText, int noteBackgroundColor, int noteFontColor, String username){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
 
-        String text = note.getText();
-        int backgroundColor = note.getBackgoundColor();
-        int fontColor = note.getFontColor();
+        String text = noteText;
+        int backgroundColor = noteBackgroundColor;
+        int fontColor = noteFontColor;
 
         cv.put(NOTES_USERNAME, username);
         cv.put(NOTES_TEXT, text);
@@ -517,9 +517,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         long result = db.delete(EXPENSE_TABLE, "id=?", new String[]{id});
         if (result == -1) {
-            Toast.makeText(context, "Failed delete", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Failed Delete", Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(context, "Deleted expense", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Deleted Expense", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /* Delete a note given a selected id */
+    public void deleteNote(String id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        long result = db.delete(NOTES_TABLE, "id=?", new String[]{id});
+        if (result == -1) {
+            Toast.makeText(context, "Failed Delete", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(context, "Deleted Note", Toast.LENGTH_SHORT).show();
         }
     }
 
