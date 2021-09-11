@@ -121,9 +121,13 @@ public class ToDoFragment extends Fragment {
                 String intervals = cursor.getString(9);
                 String starting_time = cursor.getString(10);
                 int priority = Integer.parseInt(cursor.getString(11));
+                String hour = cursor.getString(12);
+                String minute = cursor.getString(13);
 
                 String date = year + "/" + month + "/" + day;
-                ToDo todo = new ToDo(id, title, date, time, priority, setReminder, intervals, starting_time, addSpecificTime);
+                ToDo todo = new ToDo(id, title, date, time,
+                        priority, setReminder, intervals, starting_time,
+                        addSpecificTime, hour, minute);
 
                 toDoList.add(todo);
             }

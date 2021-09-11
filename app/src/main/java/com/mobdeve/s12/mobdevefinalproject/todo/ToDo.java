@@ -19,8 +19,12 @@ public class ToDo {
     private String remind_interval;
     private String remind_starting_time;
 
+    private String todo_hour;
+    private String todo_minutes;
+
     public ToDo(String todo_id, String todo_Title, String todo_date, String todo_time, int priority, int isNotified,
-                String remind_interval, String remind_starting_time, boolean isSpecificTime) {
+                String remind_interval, String remind_starting_time, boolean isSpecificTime,
+                String todo_hour, String todo_minutes) {
         this.todo_id = todo_id;
         this.todo_Title = todo_Title;
         this.todo_date = todo_date;
@@ -30,6 +34,8 @@ public class ToDo {
         this.remind_interval = remind_interval;
         this.remind_starting_time = remind_starting_time;
         this.isSpecificTime = isSpecificTime;
+        this.todo_hour = todo_hour;
+        this.todo_minutes = todo_minutes;
     }
 
     public String getTodo_id() {
@@ -70,6 +76,14 @@ public class ToDo {
 
     public boolean getIsSpecificTime() {
         return this.getIsSpecificTime();
+    }
+
+    public String getTodo_hour() {
+        return this.todo_hour;
+    }
+
+    public String getTodo_minutes() {
+        return this.todo_minutes;
     }
 
 }

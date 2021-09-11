@@ -22,6 +22,7 @@ import com.mobdeve.s12.mobdevefinalproject.database.DatabaseHelper;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class ToDoAdapter extends RecyclerView.Adapter<ToDoViewHolder> {
 
@@ -39,9 +40,11 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoViewHolder> {
     public ToDoViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
         dbHelper = new DatabaseHelper(parent.getContext());
         this.parent = parent;
+
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View itemView = inflater.inflate(R.layout.rv_template_add_todo, parent, false);
         ToDoViewHolder vh = new ToDoViewHolder(itemView);
+
         return vh;
     }
 
@@ -56,38 +59,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoViewHolder> {
         holder.getButton().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                createNotificationChannel();
-
-                ToDo selectedTodo = list.get(holder.getBindingAdapterPosition());
-                int isOn;
-
-                // Set isOn to opposite value //
-                if (selectedTodo.getIsNotified() == 1) {
-                    isOn = 0;
-                } else {
-                    isOn = 1;
-                }
-
-                // Changes color of button //
-                holder.setNotifications(isOn);
-
-                // To Do model class //
-                selectedTodo.setNotified(isOn);
-
-                // Set isOn in database for the clicked to do (todo_set_reminder column of todo_table) //
-                dbHelper.setToDoReminder(selectedTodo.getTodo_id(), isOn);
-
-                // Notify user in 10 seconds - FOR TESTING - NEED TO CHANGE TO PROPER TIME SELECTED BY USER //
-                Intent intent = new Intent(parent.getContext(), NotificationReceiver.class);
-                PendingIntent pendingIntent = PendingIntent.getBroadcast(parent.getContext(), 0, intent, 0);
-
-                AlarmManager alarmManager = (AlarmManager)parent.getContext().getSystemService(Context.ALARM_SERVICE);
-
-                long timeAtButtonClick = System.currentTimeMillis();
-                long tenSecondsInMillis = 1000 * 10;
-
-                // Sample alarm. First alarm starts after 10 seconds. Repeats every 8 seconds.
-                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, timeAtButtonClick + tenSecondsInMillis, 8000, pendingIntent);
+                triggerNotification(holder, position);
             }
         });
     }
@@ -110,5 +82,56 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoViewHolder> {
             NotificationManager notificationManager = parent.getContext().getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }
+    }
+
+    // Onclick listener for to do loudspeaker button
+    // Triggers the notification at the time and date of the respective to do
+    private void triggerNotification(@NonNull @NotNull ToDoViewHolder holder, int position) {
+        createNotificationChannel();
+
+        ToDo selectedTodo = list.get(holder.getBindingAdapterPosition());
+        int isOn;
+
+        // Set isOn to opposite value //
+        if (selectedTodo.getIsNotified() == 1) {
+            isOn = 0;
+        } else {
+            isOn = 1;
+        }
+
+        // Changes color of button //
+        holder.setNotifications(isOn);
+
+        // To Do model class //
+        selectedTodo.setNotified(isOn);
+
+        // Set isOn in database for the clicked to do (todo_set_reminder column of todo_table) //
+        dbHelper.setToDoReminder(selectedTodo.getTodo_id(), isOn);
+
+        // Notify user in 10 seconds - FOR TESTING - NEED TO CHANGE TO PROPER TIME SELECTED BY USER //
+        Intent intent = new Intent(parent.getContext(), NotificationReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(parent.getContext(), 0, intent, 0);
+
+        AlarmManager alarmManager = (AlarmManager)parent.getContext().getSystemService(Context.ALARM_SERVICE);
+
+        String date[]= selectedTodo.getTodo_date().split("/");
+        int year = Integer.parseInt(date[0]);
+        int month = Integer.parseInt(date[1]);
+        int day = Integer.parseInt(date[2]);
+
+        String hour = selectedTodo.getTodo_hour();
+        String minutes = selectedTodo.getTodo_minutes();
+
+        Calendar alarmDate = Calendar.getInstance();
+        // Subtract 1 from month as Java calendar treats months zero indexed //
+        alarmDate.set(Calendar.MONTH, month - 1);
+        alarmDate.set(Calendar.YEAR,year);
+        alarmDate.set(Calendar.DAY_OF_MONTH, day);
+        alarmDate.set(Calendar.HOUR_OF_DAY, Integer.parseInt(hour));
+        alarmDate.set(Calendar.MINUTE, Integer.parseInt(minutes));
+        alarmDate.set(Calendar.SECOND,0);
+
+        // alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, timeAtButtonClick + tenSecondsInMillis, 8000, pendingIntent);
+        alarmManager.set(AlarmManager.RTC_WAKEUP, alarmDate.getTimeInMillis(), pendingIntent);
     }
 }
