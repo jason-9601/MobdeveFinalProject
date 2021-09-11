@@ -213,7 +213,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public void addUserTodo(String username, String title, String year, String month, String day,
-                            boolean add_specific_time, boolean set_reminder, String time,
+                            int add_specific_time, int set_reminder, String time,
                             String intervals, String starting_time, int priority, String hour, String minute) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();

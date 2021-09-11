@@ -173,8 +173,27 @@ public class ToDoInput extends AppCompatActivity implements DatePickerDialog.OnD
         String starting_time = reminderStartingTime.getSelectedItem().toString();
         int priority = Integer.parseInt(etToDoPriority.getText().toString());
 
+        // Convert these two variables into integers as sqlite treats boolean as 0 or 1 only //
+        int isAddSpecificTimeInteger;
+        int isSetRemindersInteger;
+
+        if (isAddSpecificTime == true) {
+            isAddSpecificTimeInteger = 1;
+        } else {
+            isAddSpecificTimeInteger = 0;
+            hourSelected = "0";
+            minuteSelected = "0";
+            timeCombined = "0";
+        }
+
+        if (isSetReminders == true) {
+            isSetRemindersInteger = 1;
+        } else {
+            isSetRemindersInteger = 0;
+        }
+
         dbHelper.addUserTodo(loggedInUser, title, yearSelected, monthSelected, daySelected,
-                isAddSpecificTime, isSetReminders, timeCombined, intervals, starting_time,
+                isAddSpecificTimeInteger, isSetRemindersInteger, timeCombined, intervals, starting_time,
                 priority, hourSelected, minuteSelected);
     }
 
@@ -194,17 +213,23 @@ public class ToDoInput extends AppCompatActivity implements DatePickerDialog.OnD
 
     // Return true if at least one of the input fields is empty //
     public boolean inputIsNotComplete() {
+        // Check if title and date have input first as they are required fields //
         if (etToDoTitle.getText().toString().trim().length() == 0 ||
-                etToDoPriority.getText().toString().trim().length() == 0 ||
-                yearSelected.length() == 0 ||
-                monthSelected.length() == 0 ||
-                daySelected.length() == 0 ||
-                hourSelected.length() == 0 ||
-                minuteSelected.length() == 0) {
+                yearSelected == null ||
+                monthSelected == null ||
+                daySelected == null) {
             return true;
-        } else {
-            return false;
         }
+
+        // When addSpecificTime checkbox is checked, check if time has input //
+        if (addSpecificTime.isSelected()) {
+            if (daySelected == null || hourSelected == null || minuteSelected == null) {
+                return true;
+            }
+        }
+
+        // Otherwise return false is input is complete //
+        return false;
     }
 
     @Override
