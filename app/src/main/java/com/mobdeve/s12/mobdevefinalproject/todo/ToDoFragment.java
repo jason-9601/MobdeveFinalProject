@@ -5,7 +5,9 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,6 +24,8 @@ import com.mobdeve.s12.mobdevefinalproject.database.DatabaseHelper;
 import com.mobdeve.s12.mobdevefinalproject.notes.Notes;
 import com.mobdeve.s12.mobdevefinalproject.notes.NotesAdapter;
 import com.mobdeve.s12.mobdevefinalproject.notes.NotesInput;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
@@ -139,6 +143,23 @@ public class ToDoFragment extends Fragment {
         this.layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         this.rvAddToDo = view.findViewById(R.id.rv_add_todo);
         this.rvAddToDo.setLayoutManager(this.layoutManager);
+        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(rvAddToDo);
         this.rvAddToDo.setAdapter(this.toDoAdapter);
     }
+
+    ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+        @Override
+        public boolean onMove(@NonNull @NotNull RecyclerView recyclerView, @NonNull @NotNull RecyclerView.ViewHolder viewHolder, @NonNull @NotNull RecyclerView.ViewHolder target) {
+            return false;
+        }
+
+        @Override
+        public void onSwiped(@NonNull @NotNull RecyclerView.ViewHolder viewHolder, int direction) {
+            String swipedTodoId = toDoList.get(viewHolder.getAdapterPosition()).getTodo_id();
+            dbHelper.deleteTodo(swipedTodoId);
+            toDoList.remove(viewHolder.getAdapterPosition());
+            toDoAdapter.notifyDataSetChanged();
+        }
+    };
+
 }

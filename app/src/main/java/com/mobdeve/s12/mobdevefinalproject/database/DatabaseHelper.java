@@ -562,6 +562,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    /* Delete a to do given a selected id */
+    public void deleteTodo(String id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        long result = db.delete(TODO_TABLE, "todo_id=?", new String[]{id});
+        if (result == -1) {
+            Toast.makeText(context, "Failed Delete", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(context, "Deleted Todo", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     /* Add user to user_table */
     public void addUser(String username, String password, String email) {
         SQLiteDatabase db = this.getWritableDatabase();

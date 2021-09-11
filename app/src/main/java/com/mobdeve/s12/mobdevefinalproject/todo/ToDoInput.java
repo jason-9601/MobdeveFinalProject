@@ -156,10 +156,16 @@ public class ToDoInput extends AppCompatActivity implements DatePickerDialog.OnD
                 if (inputIsNotComplete()) {
                     Toast.makeText(getApplicationContext(), "Please complete all fields", Toast.LENGTH_SHORT).show();
                 } else {
-                    Intent intent = new Intent();
-                    addToDatabase();
-                    setResult(Activity.RESULT_OK, intent);
-                    finish();
+
+                    if (priorityNotBetweenRange()) {
+                        Toast.makeText(getApplicationContext(), "Priority must be between 1 and 100", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Intent intent = new Intent();
+                        addToDatabase();
+                        setResult(Activity.RESULT_OK, intent);
+                        finish();
+                    }
+
                 }
             }
         });
@@ -229,6 +235,15 @@ public class ToDoInput extends AppCompatActivity implements DatePickerDialog.OnD
         }
 
         // Otherwise return false is input is complete //
+        return false;
+    }
+
+    // Return true if to do priority is not between range (0-100) //
+    public boolean priorityNotBetweenRange() {
+        if (Integer.parseInt(etToDoPriority.getText().toString().trim()) < 0 || Integer.parseInt(etToDoPriority.getText().toString().trim()) > 100) {
+            return true;
+        }
+
         return false;
     }
 
