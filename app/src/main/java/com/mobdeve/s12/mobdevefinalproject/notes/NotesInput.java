@@ -17,6 +17,8 @@ import com.mobdeve.s12.mobdevefinalproject.R;
 import com.mobdeve.s12.mobdevefinalproject.addexpenses.AddExpensesInput;
 import com.mobdeve.s12.mobdevefinalproject.database.DatabaseHelper;
 
+import yuku.ambilwarna.AmbilWarnaDialog;
+
 
 public class NotesInput extends AppCompatActivity {
 
@@ -50,14 +52,14 @@ public class NotesInput extends AppCompatActivity {
         backgroundColor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showColorPicker();
+                showColorPicker(true, backgroundColorInt);
             }
         });
 
         fontColor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showColorPicker();
+                showColorPicker(false, fontColorInt);
             }
         });
 
@@ -75,7 +77,28 @@ public class NotesInput extends AppCompatActivity {
 
     }
 
-    private void showColorPicker(){
+    private void showColorPicker(boolean key, int currColor){
+        AmbilWarnaDialog colorPicker = new AmbilWarnaDialog(this, currColor,
+                new AmbilWarnaDialog.OnAmbilWarnaListener() {
+                    @Override
+                    public void onCancel(AmbilWarnaDialog dialog) {
+
+                    }
+
+                    @Override
+                    public void onOk(AmbilWarnaDialog dialog, int color) {
+
+                        if(key){
+                            backgroundColorInt = color;
+                            backgroundColor.setBackgroundColor(backgroundColorInt);
+                        }
+                        else{
+                            fontColorInt = color;
+                            fontColor.setTextColor(fontColorInt);
+                        }
+                    }
+                });
+        colorPicker.show();
     }
 
     private void addToDatabase(){
@@ -91,5 +114,4 @@ public class NotesInput extends AppCompatActivity {
         dbHelper.addUserNote(note, loggedInUser);
     }
 }
-
 
