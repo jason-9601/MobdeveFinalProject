@@ -113,7 +113,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                        TODO_YEAR                   + " TEXT, " +
                        TODO_MONTH                  + " TEXT, " +
                        TODO_DAY                    + " TEXT, " +
-                       TODO_ADD_SPECIFIC_TIME      + " INTEGER, " +
+                       TODO_ADD_SPECIFIC_TIME      + " BOOLEAN, " +
                        TODO_SET_REMINDER           + " BOOLEAN, " +
                        TODO_ACTIVITY_TIME          + " TEXT, " +
                        TODO_REMINDER_INTERVALS     + " TEXT, " +

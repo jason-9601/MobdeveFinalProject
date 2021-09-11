@@ -67,6 +67,14 @@ public class ToDoFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        toDoList.clear();
+        readAllTodoTable();
+        toDoAdapter.notifyDataSetChanged();
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment

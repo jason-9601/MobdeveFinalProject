@@ -58,7 +58,6 @@ public class ToDoViewHolder extends RecyclerView.ViewHolder {
 
     public void setNotifications(int isOn) {
         if (isOn == 1) {
-            // reminders.setBackgroundTintList(ColorStateList.valueOf(view.getResources().getColor(R.color.red)));
             reminders.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#FF0000")));
         } else {
             reminders.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#FFFFFF")));
