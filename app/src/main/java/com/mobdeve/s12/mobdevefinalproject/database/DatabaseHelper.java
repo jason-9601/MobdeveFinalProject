@@ -248,14 +248,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         cv.put(TODO_SET_REMINDER, isReminderNotified);
 
-        Log.d("setToDoReminder", id + " ");
-        Log.d("setToDoReminder", Integer.toString(isReminderNotified));
-
         long result = db.update(TODO_TABLE, cv, TODO_ID + "=?", new String[]{id});
         if (result == -1) {
             Toast.makeText(context, "Failed Update", Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(context, "Updated Todo Reminder to: " + Integer.toString(isReminderNotified), Toast.LENGTH_SHORT).show();
+            // Toast.makeText(context, "Updated Todo Reminder to: " + Integer.toString(isReminderNotified), Toast.LENGTH_SHORT).show();
+            if (isReminderNotified == 0) {
+                Toast.makeText(context, "Turned off reminder", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(context, "Turned on reminder", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

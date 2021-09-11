@@ -87,16 +87,23 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoViewHolder> {
     // Onclick listener for to do loudspeaker button
     // Triggers the notification at the time and date of the respective to do
     private void triggerNotification(@NonNull @NotNull ToDoViewHolder holder, int position) {
+
         createNotificationChannel();
 
         ToDo selectedTodo = list.get(holder.getBindingAdapterPosition());
-        int isOn;
 
-        // Set isOn to opposite value //
+        int selectedTodoId = Integer.parseInt(selectedTodo.getTodo_id());
+        String selectedTodoTitle = selectedTodo.getTodo_Title();
+
+        int isOn;
+        // Set isOn to opposite value
+        // Call the turnOffReminder and turnOnReminder functions accordingly
         if (selectedTodo.getIsNotified() == 1) {
             isOn = 0;
+            turnOffReminder(holder, position);
         } else {
             isOn = 1;
+            turnOnReminder(holder, position);
         }
 
         // Changes color of button //
@@ -107,10 +114,20 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoViewHolder> {
 
         // Set isOn in database for the clicked to do (todo_set_reminder column of todo_table) //
         dbHelper.setToDoReminder(selectedTodo.getTodo_id(), isOn);
+    }
 
-        // Notify user in 10 seconds - FOR TESTING - NEED TO CHANGE TO PROPER TIME SELECTED BY USER //
+    private void turnOnReminder(@NonNull @NotNull ToDoViewHolder holder, int position) {
+        ToDo selectedTodo = list.get(holder.getBindingAdapterPosition());
+
+        int selectedTodoId = Integer.parseInt(selectedTodo.getTodo_id());
+        String selectedTodoTitle = selectedTodo.getTodo_Title();
+
+        // Create intent for NotificationReceiver class //
         Intent intent = new Intent(parent.getContext(), NotificationReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(parent.getContext(), 0, intent, 0);
+        intent.putExtra("todoRequestCode", selectedTodoId);
+        intent.putExtra("todoTitle", selectedTodoTitle);
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(parent.getContext(), selectedTodoId, intent, 0);
 
         AlarmManager alarmManager = (AlarmManager)parent.getContext().getSystemService(Context.ALARM_SERVICE);
 
@@ -123,6 +140,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoViewHolder> {
         String minutes = selectedTodo.getTodo_minutes();
 
         Calendar alarmDate = Calendar.getInstance();
+
         // Subtract 1 from month as Java calendar treats months zero indexed //
         alarmDate.set(Calendar.MONTH, month - 1);
         alarmDate.set(Calendar.YEAR,year);
@@ -134,4 +152,18 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoViewHolder> {
         // alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, timeAtButtonClick + tenSecondsInMillis, 8000, pendingIntent);
         alarmManager.set(AlarmManager.RTC_WAKEUP, alarmDate.getTimeInMillis(), pendingIntent);
     }
+
+    private void turnOffReminder(@NonNull @NotNull ToDoViewHolder holder, int position) {
+        ToDo selectedTodo = list.get(holder.getBindingAdapterPosition());
+        int selectedTodoId = Integer.parseInt(selectedTodo.getTodo_id());
+
+        AlarmManager alarmManager = (AlarmManager)parent.getContext().getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(parent.getContext(), NotificationReceiver.class);
+        intent.putExtra("todoRequestCode", selectedTodoId);
+
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(parent.getContext(), selectedTodoId, intent, 0);
+
+        alarmManager.cancel(pendingIntent);
+    }
+
 }

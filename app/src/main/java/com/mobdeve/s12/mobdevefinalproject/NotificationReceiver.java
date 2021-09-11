@@ -18,14 +18,18 @@ public class NotificationReceiver extends BroadcastReceiver {
         Intent repeatingIntent = new Intent(context, MainActivity.class);
         repeatingIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 100,
+        // Get id of selected to do and set it as the request code //
+        int todoRequestCode = intent.getIntExtra("todoRequestCode", 0);
+        String todoTitle = intent.getStringExtra("todoTitle");
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, todoRequestCode,
                 repeatingIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "channelTodo")
                 .setContentIntent(pendingIntent)
                 .setSmallIcon(R.drawable.ic_dollar_sign)
-                .setContentTitle("ALERT!")
-                .setContentText("You have an event coming up!")
+                .setContentTitle(todoTitle)
+                .setContentText("You have an event coming up! :D")
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setAutoCancel(true);
 
