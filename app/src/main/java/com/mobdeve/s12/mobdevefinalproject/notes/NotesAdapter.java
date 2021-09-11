@@ -17,7 +17,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesViewHolder> {
 
     private ArrayList<Notes> notesList;
 
-    public NotesAdapter(ArrayList<Notes> notesList){
+    public NotesAdapter(ArrayList<Notes> notesList) {
         this.notesList = notesList;
     }
 
@@ -35,6 +35,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesViewHolder> {
     public void onBindViewHolder(@NonNull @NotNull NotesViewHolder holder, int i) {
         holder.setNotesText(this.notesList.get(i).getText());
         holder.setBackgroundColor(this.notesList.get(i).getBackgoundColor());
+        holder.setLlRvNotesTemplateColor(this.notesList.get(i).getBackgoundColor());
         holder.setFontColor(this.notesList.get(i).getFontColor());
     }
 
