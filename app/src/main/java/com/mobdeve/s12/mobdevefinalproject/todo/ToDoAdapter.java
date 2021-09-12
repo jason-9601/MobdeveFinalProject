@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.mobdeve.s12.mobdevefinalproject.DateTimeHelper;
 import com.mobdeve.s12.mobdevefinalproject.NotificationReceiver;
 import com.mobdeve.s12.mobdevefinalproject.R;
 import com.mobdeve.s12.mobdevefinalproject.database.DatabaseHelper;
@@ -52,7 +53,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoViewHolder> {
     public void onBindViewHolder(@NonNull @NotNull ToDoViewHolder holder, int position) {
         holder.setTitle(list.get(position).getTodo_Title());
         holder.setDate(list.get(position).getTodo_date());
-        holder.setTime(list.get(position).getTodo_time());
+        holder.setTime(DateTimeHelper.reformatTimeString(list.get(position).getTodo_hour(), list.get(position).getTodo_minutes()));
         holder.setPriority(list.get(position).getPriority());
         holder.setNotifications(list.get(position).getIsNotified());
 

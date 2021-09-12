@@ -23,6 +23,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.android.material.timepicker.TimeFormat;
+import com.mobdeve.s12.mobdevefinalproject.DateTimeHelper;
 import com.mobdeve.s12.mobdevefinalproject.R;
 import com.mobdeve.s12.mobdevefinalproject.database.DatabaseHelper;
 import com.mobdeve.s12.mobdevefinalproject.notes.NotesInput;
@@ -200,9 +201,12 @@ public class ToDoInput extends AppCompatActivity implements DatePickerDialog.OnD
             isSetRemindersInteger = 0;
         }
 
+        String fullDateTime = DateTimeHelper.convertToDate(yearSelected, monthSelected, daySelected) +
+                " " + DateTimeHelper.reformatTimeString(hourSelected, minuteSelected);
+
         dbHelper.addUserTodo(loggedInUser, title, yearSelected, monthSelected, daySelected,
                 isAddSpecificTimeInteger, isSetRemindersInteger, timeCombined, intervals, starting_time,
-                priority, hourSelected, minuteSelected);
+                priority, hourSelected, minuteSelected, fullDateTime);
     }
 
     private void showDatePicker() {

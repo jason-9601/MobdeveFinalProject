@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
+import com.mobdeve.s12.mobdevefinalproject.DateTimeHelper;
 import com.mobdeve.s12.mobdevefinalproject.notes.Notes;
 
 import com.mobdeve.s12.mobdevefinalproject.todo.TimeString;
@@ -66,6 +67,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TODO_PRIORITY = "todo_priority";
     private static final String TODO_HOUR = "todo_hour";
     private static final String TODO_MINUTE = "todo_minute";
+    private static final String TODO_FULLDATETIME = "todo_fulldatetime";
 
     public DatabaseHelper(@Nullable Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -124,7 +126,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         TODO_REMINDER_STARTING_TIME + " TEXT, " +
                         TODO_PRIORITY + " INT, " +
                         TODO_HOUR + " TEXT, " +
-                        TODO_MINUTE + " TEXT" +
+                        TODO_MINUTE + " TEXT, " +
+                        TODO_FULLDATETIME + " TEXT" +
                         ");";
 
         // Execute queries //
@@ -161,7 +164,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cv.put(EXPENSE_COLUMN_AMOUNT, amount);
         cv.put(EXPENSE_COLUMN_CATEGORY, category);
         cv.put(EXPENSE_COLUMN_USERNAME, username);
-        cv.put(EXPENSE_COLUMN_FULLDATE, convertToDate(year, month, day));
+        cv.put(EXPENSE_COLUMN_FULLDATE, DateTimeHelper.convertToDate(year, month, day));
 
         long result = db.insert(EXPENSE_TABLE, null, cv);
 
@@ -172,24 +175,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    /* Convert year, month, day to YYYY-MM-DD string */
-    public String convertToDate(String year, String month, String day) {
-        String newMonth = month;
-        String newDay = day;
-
-        if (month.length() == 1) {
-            newMonth = "0" + month;
-        }
-
-        if (day.length() == 1) {
-            newDay = "0" + day;
-        }
-
-        String newDate = year + "-" + newMonth + "-" + newDay;
-
-        return newDate;
-    }
-
+    /* Add note to notes_table of a user */
     public void addUserNote(String noteText, int noteBackgroundColor, int noteFontColor, String username) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
@@ -212,9 +198,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public void addUserTodo(String username, String title, String year, String month, String day,
-                            int add_specific_time, int set_reminder, String time,
-                            String intervals, String starting_time, int priority, String hour, String minute) {
+    /* Add to do to todo_table of a user */
+    public void addUserTodo(String username, String title, String year, String month,
+                            String day, int add_specific_time, int set_reminder, String time,
+                            String intervals, String starting_time, int priority, String hour,
+                            String minute, String fulldatetime) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
 
@@ -231,6 +219,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cv.put(TODO_PRIORITY, priority);
         cv.put(TODO_HOUR, hour);
         cv.put(TODO_MINUTE, minute);
+        cv.put(TODO_FULLDATETIME, fulldatetime);
 
         long result = db.insert(TODO_TABLE, null, cv);
 
@@ -303,7 +292,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public Cursor readAllUserTodoTable(String username) {
         String query = "SELECT * FROM " + TODO_TABLE + " WHERE " +
-                TODO_USERNAME + "=?";
+                TODO_USERNAME + "=?" +
+                " ORDER BY datetime(" + TODO_FULLDATETIME +
+                ") DESC";
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = null;
@@ -368,7 +359,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         Cursor cursor = null;
         if (db != null) {
-            cursor = db.rawQuery(query, new String[]{username, year, getIntegerMonth(month)});
+            cursor = db.rawQuery(query, new String[]{username, year, DateTimeHelper.getIntegerMonth(month)});
         }
 
         return cursor;
@@ -387,56 +378,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         Cursor cursor = null;
         if (db != null) {
-            cursor = db.rawQuery(query, new String[]{username, year, getIntegerMonth(month)});
+            cursor = db.rawQuery(query, new String[]{username, year, DateTimeHelper.getIntegerMonth(month)});
         }
 
         return cursor;
-    }
-
-    /* Return a month as a number string, for example: "January" returns "1" */
-    public String getIntegerMonth(String month) {
-        String integerMonth = "";
-
-        switch (month) {
-            case "January":
-                integerMonth = "1";
-                break;
-            case "February":
-                integerMonth = "2";
-                break;
-            case "March":
-                integerMonth = "3";
-                break;
-            case "April":
-                integerMonth = "4";
-                break;
-            case "May":
-                integerMonth = "5";
-                break;
-            case "June":
-                integerMonth = "6";
-                break;
-            case "July":
-                integerMonth = "7";
-                break;
-            case "August":
-                integerMonth = "8";
-                break;
-            case "September":
-                integerMonth = "9";
-                break;
-            case "October":
-                integerMonth = "10";
-                break;
-            case "November":
-                integerMonth = "11";
-                break;
-            default:
-                integerMonth = "12";
-                break;
-        }
-
-        return integerMonth;
     }
 
     /* Return the sums of expenses grouped by category in expense_table of selected user */
@@ -468,7 +413,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         Cursor cursor = null;
         if (db != null) {
-            cursor = db.rawQuery(query, new String[]{username, year, getIntegerMonth(month)});
+            cursor = db.rawQuery(query, new String[]{username, year, DateTimeHelper.getIntegerMonth(month)});
         }
 
         return cursor;
@@ -487,7 +432,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         Cursor cursor = null;
         if (db != null) {
-            cursor = db.rawQuery(query, new String[]{username, year, getIntegerMonth(month)});
+            cursor = db.rawQuery(query, new String[]{username, year, DateTimeHelper.getIntegerMonth(month)});
         }
 
         return cursor;
