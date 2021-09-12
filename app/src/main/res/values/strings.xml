@@ -28,23 +28,15 @@
     </string-array>
 
     <string-array name="reminders_intervals_array">
-        <item>Every 5 Minutes</item>
-        <item>Every 10 minutes</item>
-        <item>Every 30 minutes</item>
-        <item>Every hour</item>
-        <item>Every 3 hours</item>
-        <item>Every 6 hours</item>
-        <item>Every 12 hours</item>
-        <item>Every 24 Hours</item>
+        <item>Once</item>
+        <item>Twice</item>
+        <item>Thrice</item>
     </string-array>
 
     <string-array name="reminders_intervals_starting_time_array">
-        <item>72 Hours Before</item>
-        <item>48 Hours Before</item>
-        <item>24 Hours Before</item>
-        <item>12 Hours Before</item>
-        <item>3 Hours Before</item>
-        <item>1 Hour Before</item>
+        <item>On The Day Itself</item>
+        <item>1 Day Before</item>
+        <item>2 Days Before</item>
     </string-array>
 
     <string name="Done">Done</string>

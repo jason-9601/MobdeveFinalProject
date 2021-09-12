@@ -6,7 +6,9 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +33,10 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoViewHolder> {
     private ArrayList<ToDo> list;
     private DatabaseHelper dbHelper;
 
+    // Shared preferences //
+    private SharedPreferences sp;
+    private SharedPreferences.Editor spEditor;
+
     public ToDoAdapter(ArrayList<ToDo> list){
         this.list = list;
     }
@@ -40,6 +46,8 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoViewHolder> {
     @Override
     public ToDoViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
         dbHelper = new DatabaseHelper(parent.getContext());
+        sp = PreferenceManager.getDefaultSharedPreferences(parent.getContext());
+        spEditor = this.sp.edit();
         this.parent = parent;
 
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
@@ -123,6 +131,14 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoViewHolder> {
         int selectedTodoId = Integer.parseInt(selectedTodo.getTodo_id());
         String selectedTodoTitle = selectedTodo.getTodo_Title();
 
+        String whenStart = selectedTodo.getRemindStartingTime();
+        String alarmIntervals = selectedTodo.getRemindInterval();
+
+        // Count how many times alarm has repeated for selected to do //
+        spEditor.putInt("CURRENT_COUNT_OF_ID_" + selectedTodoId, 0);
+        spEditor.putInt("GOAL_COUNT_OF_" + selectedTodoId, 2);
+        spEditor.apply();
+
         // Create intent for NotificationReceiver class //
         Intent intent = new Intent(parent.getContext(), NotificationReceiver.class);
         intent.putExtra("todoRequestCode", selectedTodoId);
@@ -136,22 +152,26 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoViewHolder> {
         int year = Integer.parseInt(date[0]);
         int month = Integer.parseInt(date[1]);
         int day = Integer.parseInt(date[2]);
+        int hour = Integer.parseInt(selectedTodo.getTodo_hour());
+        int minutes = Integer.parseInt(selectedTodo.getTodo_minutes());
 
-        String hour = selectedTodo.getTodo_hour();
-        String minutes = selectedTodo.getTodo_minutes();
+        // Create Calendar based from to do date //
+        // Subtract 1 from month parameter as it is zero indexed in the database //
+        Calendar alarmDate = getCalendarWithValues(year, month - 1, day,
+                hour, minutes, 0);
 
-        Calendar alarmDate = Calendar.getInstance();
+        long alarmStartingMillis = getAlarmStarting(alarmDate, whenStart, alarmIntervals);
+        long alarmIntervalsMillis = getAlarmIntervals(alarmDate, whenStart, alarmIntervals);
 
-        // Subtract 1 from month as Java calendar treats months zero indexed //
-        alarmDate.set(Calendar.MONTH, month - 1);
-        alarmDate.set(Calendar.YEAR,year);
-        alarmDate.set(Calendar.DAY_OF_MONTH, day);
-        alarmDate.set(Calendar.HOUR_OF_DAY, Integer.parseInt(hour));
-        alarmDate.set(Calendar.MINUTE, Integer.parseInt(minutes));
-        alarmDate.set(Calendar.SECOND,0);
+        Log.d("alarmStartingMillis", Long.toString(alarmStartingMillis));
+        Log.d("alarmIntervalsMillis", Long.toString(alarmIntervalsMillis));
 
+        Log.d("compare", Long.toString(alarmDate.getTimeInMillis()));
+        Log.d("compare", Long.toString(alarmStartingMillis));
+
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, alarmStartingMillis, alarmIntervalsMillis, pendingIntent);
         // alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, timeAtButtonClick + tenSecondsInMillis, 8000, pendingIntent);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, alarmDate.getTimeInMillis(), pendingIntent);
+        // alarmManager.set(AlarmManager.RTC_WAKEUP, alarmDate.getTimeInMillis(), pendingIntent);
     }
 
     private void turnOffReminder(@NonNull @NotNull ToDoViewHolder holder, int position) {
@@ -162,9 +182,123 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoViewHolder> {
         Intent intent = new Intent(parent.getContext(), NotificationReceiver.class);
         intent.putExtra("todoRequestCode", selectedTodoId);
 
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(parent.getContext(), selectedTodoId, intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(parent.getContext(), selectedTodoId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         alarmManager.cancel(pendingIntent);
+    }
+
+    // Return a Calendar with set values //
+    private Calendar getCalendarWithValues(int year, int month, int day,
+                                     int hour, int minutes, int seconds) {
+        Calendar alarmDate = Calendar.getInstance();
+
+        alarmDate.set(Calendar.MONTH, month);
+        alarmDate.set(Calendar.YEAR,year);
+        alarmDate.set(Calendar.DAY_OF_MONTH, day);
+        alarmDate.set(Calendar.HOUR_OF_DAY, hour);
+        alarmDate.set(Calendar.MINUTE, minutes);
+        alarmDate.set(Calendar.SECOND,0);
+
+        return alarmDate;
+    }
+
+    // Get the starting time of the alarm in milliseconds //
+    private long getAlarmStarting(Calendar scheduledDate, String whenStart, String alarmIntervals) {
+
+        long alarmStarting;
+        Log.d("alarmstarting" , whenStart);
+        Log.d("alarmstarting", alarmIntervals);
+
+        if (whenStart.equals("On The Day Itself")) {
+
+            if (alarmIntervals.equals("Once")) {
+                alarmStarting = scheduledDate.getTimeInMillis();
+                Log.d("equal", "Once");
+            } else if (alarmIntervals.equals("Twice")) {
+                // Subtract an hour or 3600000 milliseconds //
+                alarmStarting = scheduledDate.getTimeInMillis() - 3600000;
+                Log.d("equal", "Twice");
+            } else {
+                // Subtract two hours or 7200000 milliseconds //
+                alarmStarting = scheduledDate.getTimeInMillis() - 7200000;
+                Log.d("equal", "Thrice else");
+            }
+
+            Log.d("equal", "equal1st");
+
+        } else if (whenStart.equals("1 Day Before")) {
+
+            // Subtract a day in milliseconds //
+            alarmStarting = scheduledDate.getTimeInMillis() -  86400000;
+            Log.d("equal", "equal2st");
+        } else if (whenStart.equals("2 Days Before")) {
+
+            // Subtract 2 days in milliseconds //
+            alarmStarting = scheduledDate.getTimeInMillis() - 172800000;
+            Log.d("equal", "equal3st");
+        } else {
+            // Default value //
+            alarmStarting = scheduledDate.getTimeInMillis();
+        }
+
+        return alarmStarting;
+
+    }
+
+    // Get alarm intervals in milliseconds //
+    private long getAlarmIntervals(Calendar scheduledDate, String whenStart, String alarmIntervals) {
+
+        long alarmIntervalsInMillis;
+        Log.d("alarmstarting" , whenStart);
+        Log.d("alarmstarting", alarmIntervals);
+
+        if (whenStart.equals("On The Day Itself")) {
+
+            if (alarmIntervals.equals("Once")) {
+                alarmIntervalsInMillis = scheduledDate.getTimeInMillis();
+                Log.d("equalintervals", "Once");
+            } else if (alarmIntervals.equals("Twice")) {
+                alarmIntervalsInMillis = (scheduledDate.getTimeInMillis() - 3600000) / 2;
+                Log.d("equalintervals", "Twice");
+            } else {
+                alarmIntervalsInMillis = (scheduledDate.getTimeInMillis() - 3600000) / 3;
+                Log.d("equalintervals", "Thrice else");
+            }
+
+        } else if (whenStart.equals("1 Day Before")) {
+
+            if (alarmIntervals.equals("Once")) {
+                alarmIntervalsInMillis = scheduledDate.getTimeInMillis();
+                Log.d("equalintervals", "1 day before Once");
+            } else if (alarmIntervals.equals("Twice")) {
+                alarmIntervalsInMillis = (scheduledDate.getTimeInMillis() -  86400000) / 2;
+                Log.d("equalintervals", "1 day before Twice");
+            } else {
+                alarmIntervalsInMillis = (scheduledDate.getTimeInMillis() -  86400000) / 3;
+                Log.d("equalintervals", "1 day before Thrice");
+            }
+
+        } else if (whenStart.equals("2 Days Before")) {
+
+            if (alarmIntervals.equals("Once")) {
+                alarmIntervalsInMillis = scheduledDate.getTimeInMillis();
+                Log.d("equalintervals", "2 day before Once");
+            } else if (alarmIntervals.equals("Twice")) {
+                alarmIntervalsInMillis = (scheduledDate.getTimeInMillis() - 172800000) / 2;
+                Log.d("equalintervals", "2 day before Twice");
+            } else {
+                alarmIntervalsInMillis = (scheduledDate.getTimeInMillis() - 172800000) / 3;
+                Log.d("equalintervals", "1 day before Thrice");
+            }
+
+        } else {
+            // Default value //
+            alarmIntervalsInMillis = 120000;
+        }
+
+        alarmIntervalsInMillis = 20000;
+        return alarmIntervalsInMillis;
+
     }
 
 }

@@ -143,8 +143,8 @@ public class ToDoInput extends AppCompatActivity implements DatePickerDialog.OnD
                     reminderIntervals.setEnabled(false);
                     reminderStartingTime.setEnabled(false);
 
-                    reminderIntervals.setSelection(5);
-                    reminderStartingTime.setSelection(2);
+                    reminderIntervals.setSelection(0);
+                    reminderStartingTime.setSelection(0);
 
                     isSetReminders = false;
                 }
