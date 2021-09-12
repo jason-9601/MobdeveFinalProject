@@ -193,7 +193,9 @@ public class ToDoInput extends AppCompatActivity implements DatePickerDialog.OnD
         }
 
         if (isSetReminders == true) {
-            isSetRemindersInteger = 1;
+            // Temporarily set this to 0 by default
+            // isSetRemindersInteger = 1;
+            isSetRemindersInteger = 0;
         } else {
             isSetRemindersInteger = 0;
         }

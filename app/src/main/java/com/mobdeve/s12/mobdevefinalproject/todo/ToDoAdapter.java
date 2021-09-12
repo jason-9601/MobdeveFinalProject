@@ -127,7 +127,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoViewHolder> {
         intent.putExtra("todoRequestCode", selectedTodoId);
         intent.putExtra("todoTitle", selectedTodoTitle);
 
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(parent.getContext(), selectedTodoId, intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(parent.getContext(), selectedTodoId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         AlarmManager alarmManager = (AlarmManager)parent.getContext().getSystemService(Context.ALARM_SERVICE);
 
