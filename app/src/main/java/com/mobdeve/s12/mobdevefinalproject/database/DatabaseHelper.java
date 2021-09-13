@@ -290,10 +290,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
+    /* Read all user to do (ordered by datetime by default) */
     public Cursor readAllUserTodoTable(String username) {
         String query = "SELECT * FROM " + TODO_TABLE + " WHERE " +
                 TODO_USERNAME + "=?" +
                 " ORDER BY datetime(" + TODO_FULLDATETIME +
+                ") DESC";
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = null;
+        if (db != null) {
+            cursor = db.rawQuery(query, new String[]{username});
+        }
+        return cursor;
+    }
+
+    /* Read all user to do ordered by priority */
+    public Cursor readAllUserTodoByPriority(String username) {
+        String query = "SELECT * FROM " + TODO_TABLE + " WHERE " +
+                TODO_USERNAME + "=?" +
+                " ORDER BY (" + TODO_PRIORITY +
                 ") DESC";
         SQLiteDatabase db = this.getReadableDatabase();
 

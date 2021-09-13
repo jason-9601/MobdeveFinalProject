@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -41,6 +42,9 @@ public class ToDoFragment extends Fragment {
 
     private DatabaseHelper dbHelper;
     private String loggedInUser;
+
+    private Button btnPriority;
+    private Button btnDateTime;
 
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
@@ -93,6 +97,26 @@ public class ToDoFragment extends Fragment {
             }
         });
 
+        btnPriority = view.findViewById(R.id.btn_priority);
+        btnPriority.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toDoList.clear();
+                readAllTodoByPriority();
+                toDoAdapter.notifyDataSetChanged();
+            }
+        });
+
+        btnDateTime = view.findViewById(R.id.btn_date_time);
+        btnDateTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toDoList.clear();
+                readAllTodoTable();
+                toDoAdapter.notifyDataSetChanged();
+            }
+        });
+
         this.toDoList = new ArrayList<ToDo>();
 
         dbHelper = new DatabaseHelper(getActivity());
@@ -110,6 +134,36 @@ public class ToDoFragment extends Fragment {
 
     private void readAllTodoTable() {
         Cursor cursor = dbHelper.readAllUserTodoTable(loggedInUser);
+        if (cursor.getCount() == 0) {
+            Toast.makeText(getActivity(), "No Data Available", Toast.LENGTH_SHORT).show();
+        } else {
+            while (cursor.moveToNext()) {
+                String id = cursor.getString(0);
+                String title = cursor.getString(2);
+                String year = cursor.getString(3);
+                String month = cursor.getString(4);
+                String day = cursor.getString(5);
+                boolean addSpecificTime = Boolean.parseBoolean(cursor.getString(6));
+                int setReminder = Integer.parseInt(cursor.getString(7));
+                String time = cursor.getString(8);
+                String intervals = cursor.getString(9);
+                String starting_time = cursor.getString(10);
+                int priority = Integer.parseInt(cursor.getString(11));
+                String hour = cursor.getString(12);
+                String minute = cursor.getString(13);
+
+                String date = year + "/" + month + "/" + day;
+                ToDo todo = new ToDo(id, title, date, time,
+                        priority, setReminder, intervals, starting_time,
+                        addSpecificTime, hour, minute);
+
+                toDoList.add(todo);
+            }
+        }
+    }
+
+    private void readAllTodoByPriority() {
+        Cursor cursor = dbHelper.readAllUserTodoByPriority(loggedInUser);
         if (cursor.getCount() == 0) {
             Toast.makeText(getActivity(), "No Data Available", Toast.LENGTH_SHORT).show();
         } else {
