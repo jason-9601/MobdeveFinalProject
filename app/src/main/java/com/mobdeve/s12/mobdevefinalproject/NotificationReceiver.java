@@ -21,10 +21,20 @@ public class NotificationReceiver extends BroadcastReceiver {
     private SharedPreferences sp;
     private SharedPreferences.Editor spEditor;
 
+    private int todoRequestCode;
+    private String todoTitle;
+
+    private int currentCount;
+    private int goalCount;
+
+    private String loggedInUser;
+
     @Override
     public void onReceive(Context context, Intent intent) {
         sp = PreferenceManager.getDefaultSharedPreferences(context);
         spEditor = this.sp.edit();
+
+        this.loggedInUser = sp.getString("KEY_USERNAME_LOGGED_IN", "N/A");
 
         NotificationManager notificationManager = (NotificationManager)context.
                 getSystemService(Context.NOTIFICATION_SERVICE);
@@ -33,51 +43,59 @@ public class NotificationReceiver extends BroadcastReceiver {
         repeatingIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
         // Get id of selected to do and set it as the request code for the Pending Intent //
-        int todoRequestCode = intent.getIntExtra("todoRequestCode", 0);
-        String todoTitle = intent.getStringExtra("todoTitle");
+        this.todoRequestCode = intent.getIntExtra("todoRequestCode", 0);
+        this.todoTitle = intent.getStringExtra("todoTitle");
 
         // Get current count of how many times the alarm has occured
         // This will be compared to the goal count/intervals that the alarm needs to reach
-        int currentCount = sp.getInt("CURRENT_COUNT_OF_ID_" + todoRequestCode, 0);
-        int goalCount = sp.getInt("GOAL_COUNT_OF_" + todoRequestCode, 0);
+        this.currentCount = sp.getInt("CURRENT_COUNT_OF_ID_" + todoRequestCode, 0);
+        this.goalCount = sp.getInt("GOAL_COUNT_OF_" + todoRequestCode, 0);
 
-        // If current count has not yet reached the goal //
+        /* If current count has not yet reached the goal, notify the user */
         if (currentCount < goalCount) {
-            PendingIntent pendingIntent = PendingIntent.getActivity(context, todoRequestCode,
-                    repeatingIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "channelTodo")
-                    .setContentIntent(pendingIntent)
-                    .setSmallIcon(R.drawable.ic_dollar_sign)
-                    .setContentTitle(todoTitle)
-                    .setContentText("Current: " + Integer.toString(currentCount)+
-                            "\nGoal: " + Integer.toString(goalCount))
-                    //.setContentText("You have an event coming up! :D")
-                    .setPriority(NotificationCompat.PRIORITY_HIGH)
-                    .setAutoCancel(true);
-
-            notificationManager.notify(todoRequestCode, builder.build());
-
-            Log.d("I AM CALLED", "Current: " + Integer.toString(currentCount));
-
-            // Increment current count of alarm //
-            spEditor.putInt("CURRENT_COUNT_OF_ID_" + todoRequestCode, currentCount + 1);
-            spEditor.apply();
+            notifyUser(context, repeatingIntent, notificationManager);
         } else {
-            Log.d("REACHEDGOAL", "REACHEDGOAL!!!!");
+            /* Cancel the alarm is the current count has reached the goal count */
+            cancelAlarm(context, repeatingIntent);
+        }
+    }
 
-            AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+    private void notifyUser(Context context, Intent repeatingIntent, NotificationManager notificationManager) {
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, todoRequestCode,
+                repeatingIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-            PendingIntent pendingIntent = PendingIntent.getActivity(context, todoRequestCode,
-                    repeatingIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "channelTodo")
+                .setContentIntent(pendingIntent)
+                .setSmallIcon(R.drawable.ic_dollar_sign)
+                .setContentTitle(todoTitle)
+                .setContentText("Hello " + loggedInUser + "! You have an event coming up! :D")
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setAutoCancel(true);
 
-            try {
-                alarmManager.cancel(pendingIntent);
-                Log.e("cancel", "Cancelling success");
-            } catch(Exception e) {
-                Log.e("cancel", "AlarmManager update was not canceled. " + e.toString());
-            }
+        notificationManager.notify(todoRequestCode, builder.build());
 
+        Log.d("currentcount", "Current: " + todoRequestCode);
+        Log.d("currentcount", "Current: " + Integer.toString(currentCount) +
+                " Goal: " + Integer.toString(goalCount));
+
+        // Increment current count of alarm //
+        spEditor.putInt("CURRENT_COUNT_OF_ID_" + todoRequestCode, currentCount + 1);
+        spEditor.apply();
+    }
+
+    private void cancelAlarm(Context context, Intent repeatingIntent) {
+        Log.d("cancelAlarm", "Reached Goal Count!");
+
+        AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, todoRequestCode,
+                repeatingIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        try {
+            alarmManager.cancel(pendingIntent);
+            Log.e("cancel", "Cancelling success");
+        } catch(Exception e) {
+            Log.e("cancel", "AlarmManager update was not canceled. " + e.toString());
         }
     }
 

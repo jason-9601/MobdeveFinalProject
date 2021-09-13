@@ -125,6 +125,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoViewHolder> {
         dbHelper.setToDoReminder(selectedTodo.getTodo_id(), isOn);
     }
 
+    // Function to turn on reminder. Starts up the repeating alarm of respective to do //
     private void turnOnReminder(@NonNull @NotNull ToDoViewHolder holder, int position) {
         ToDo selectedTodo = list.get(holder.getBindingAdapterPosition());
 
@@ -134,9 +135,11 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoViewHolder> {
         String whenStart = selectedTodo.getRemindStartingTime();
         String alarmIntervals = selectedTodo.getRemindInterval();
 
+        int goalCount = getGoalCount(alarmIntervals);
+
         // Count how many times alarm has repeated for selected to do //
         spEditor.putInt("CURRENT_COUNT_OF_ID_" + selectedTodoId, 0);
-        spEditor.putInt("GOAL_COUNT_OF_" + selectedTodoId, 2);
+        spEditor.putInt("GOAL_COUNT_OF_" + selectedTodoId, goalCount);
         spEditor.apply();
 
         // Create intent for NotificationReceiver class //
@@ -163,17 +166,10 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoViewHolder> {
         long alarmStartingMillis = getAlarmStarting(alarmDate, whenStart, alarmIntervals);
         long alarmIntervalsMillis = getAlarmIntervals(alarmDate, whenStart, alarmIntervals);
 
-        Log.d("alarmStartingMillis", Long.toString(alarmStartingMillis));
-        Log.d("alarmIntervalsMillis", Long.toString(alarmIntervalsMillis));
-
-        Log.d("compare", Long.toString(alarmDate.getTimeInMillis()));
-        Log.d("compare", Long.toString(alarmStartingMillis));
-
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, alarmStartingMillis, alarmIntervalsMillis, pendingIntent);
-        // alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, timeAtButtonClick + tenSecondsInMillis, 8000, pendingIntent);
-        // alarmManager.set(AlarmManager.RTC_WAKEUP, alarmDate.getTimeInMillis(), pendingIntent);
     }
 
+    // Function to turn off reminder. Cancels the repeating alarm of respective to do //
     private void turnOffReminder(@NonNull @NotNull ToDoViewHolder holder, int position) {
         ToDo selectedTodo = list.get(holder.getBindingAdapterPosition());
         int selectedTodoId = Integer.parseInt(selectedTodo.getTodo_id());
@@ -204,10 +200,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoViewHolder> {
 
     // Get the starting time of the alarm in milliseconds //
     private long getAlarmStarting(Calendar scheduledDate, String whenStart, String alarmIntervals) {
-
         long alarmStarting;
-        Log.d("alarmstarting" , whenStart);
-        Log.d("alarmstarting", alarmIntervals);
 
         if (whenStart.equals("On The Day Itself")) {
 
@@ -242,15 +235,11 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoViewHolder> {
         }
 
         return alarmStarting;
-
     }
 
     // Get alarm intervals in milliseconds //
     private long getAlarmIntervals(Calendar scheduledDate, String whenStart, String alarmIntervals) {
-
         long alarmIntervalsInMillis;
-        Log.d("alarmstarting" , whenStart);
-        Log.d("alarmstarting", alarmIntervals);
 
         if (whenStart.equals("On The Day Itself")) {
 
@@ -296,9 +285,30 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoViewHolder> {
             alarmIntervalsInMillis = 120000;
         }
 
-        alarmIntervalsInMillis = 20000;
+        alarmIntervalsInMillis = 30000;
         return alarmIntervalsInMillis;
+    }
 
+    // Return goal count base on interval in the database (Once, Twice, Thrice) //
+    private int getGoalCount(String alarmIntervals) {
+        int goalCount;
+
+        switch(alarmIntervals) {
+            case "Once":
+                goalCount = 1;
+                break;
+            case "Twice":
+                goalCount = 2;
+                break;
+            case "Thrice":
+                goalCount = 3;
+                break;
+            default:
+                goalCount = 1;
+                break;
+        }
+
+        return goalCount;
     }
 
 }
