@@ -210,7 +210,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoViewHolder> {
                 hour, minutes, 0);
 
         long alarmStartingMillis = getAlarmStarting(alarmDate, whenStart, alarmIntervals);
-        long alarmIntervalsMillis = getAlarmIntervals(alarmDate, whenStart, alarmIntervals);
+        long alarmIntervalsMillis = getAlarmIntervals(alarmDate, alarmStartingMillis, whenStart, alarmIntervals);
 
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, alarmStartingMillis, alarmIntervalsMillis, pendingIntent);
     }
@@ -249,95 +249,62 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoViewHolder> {
         // Default value //
         long alarmStarting = scheduledDate.getTimeInMillis();
 
+        Calendar calendar = Calendar.getInstance();
+        long currentTime = calendar.getTimeInMillis();
+
         if (whenStart.equals("On The Day Itself")) {
 
             if (alarmIntervals.equals("Once")) {
-                // Alarm on the time itself
+                // Alarm on the time itself //
                 alarmStarting = scheduledDate.getTimeInMillis();
             } else if (alarmIntervals.equals("Twice")) {
-                // Subtract an hour or 3600000 milliseconds //
-                alarmStarting = scheduledDate.getTimeInMillis() - 3600000;
+                // Subtract current time from goal time //
+                alarmStarting = currentTime + ((scheduledDate.getTimeInMillis() - currentTime) / 2);
             } else if (alarmIntervals.equals("Thrice")) {
-                // Subtract two hours or 7200000 milliseconds //
-                alarmStarting = scheduledDate.getTimeInMillis() - 7200000;
+                // Subtract current time from goal time //
+                alarmStarting = currentTime + ((scheduledDate.getTimeInMillis() - currentTime) / 3);
             }
 
         } else if (whenStart.equals("1 Day Before")) {
-
             // Subtract a day in milliseconds //
             alarmStarting = scheduledDate.getTimeInMillis() - 86400000;
-            Log.d("equal", "equal2st");
-
         } else if (whenStart.equals("2 Days Before")) {
-
             // Subtract 2 days in milliseconds //
             alarmStarting = scheduledDate.getTimeInMillis() - 172800000;
-            Log.d("equal", "equal3st");
-
         }
 
         Calendar currentDateTime = Calendar.getInstance();
-        boolean isLater = goalTimeIsLater(scheduledDate.getTimeInMillis(), currentDateTime.getTimeInMillis());
+        boolean isLater = goalTimeIsLater(currentDateTime.getTimeInMillis(), scheduledDate.getTimeInMillis());
         Log.d("time-islater", Boolean.toString(isLater));
 
         // If the value of starting alarm date time is not later than current date time, set alarm starting to the current datetime //
         if (!isLater) {
             alarmStarting = scheduledDate.getTimeInMillis();
+            Log.d("insidestarting", Long.toString(alarmStarting));
         }
+
+        Log.d("alarmStarting", "Alarm starting: " + alarmStarting);
+        Log.d("current", "current millis: " + calendar.getTimeInMillis());
 
         return alarmStarting;
     }
 
     // Get alarm intervals in milliseconds //
-    private long getAlarmIntervals(Calendar scheduledDate, String whenStart, String alarmIntervals) {
-        long alarmIntervalsInMillis;
+    private long getAlarmIntervals(Calendar scheduledDate, long startDate, String whenStart, String alarmIntervals) {
+        long alarmIntervalsInMillis = 30000;
 
-        if (whenStart.equals("On The Day Itself")) {
-
-            if (alarmIntervals.equals("Once")) {
-                alarmIntervalsInMillis = scheduledDate.getTimeInMillis();
-                Log.d("equalintervals", "Once");
-            } else if (alarmIntervals.equals("Twice")) {
-                alarmIntervalsInMillis = (scheduledDate.getTimeInMillis() - 3600000) / 2;
-                Log.d("equalintervals", "Twice");
-            } else {
-                alarmIntervalsInMillis = (scheduledDate.getTimeInMillis() - 3600000) / 3;
-                Log.d("equalintervals", "Thrice else");
-            }
-
-        } else if (whenStart.equals("1 Day Before")) {
-
-            if (alarmIntervals.equals("Once")) {
-                alarmIntervalsInMillis = scheduledDate.getTimeInMillis();
-                Log.d("equalintervals", "1 day before Once");
-            } else if (alarmIntervals.equals("Twice")) {
-                alarmIntervalsInMillis = (scheduledDate.getTimeInMillis() - 86400000) / 2;
-                Log.d("equalintervals", "1 day before Twice");
-            } else {
-                alarmIntervalsInMillis = (scheduledDate.getTimeInMillis() - 86400000) / 3;
-                Log.d("equalintervals", "1 day before Thrice");
-            }
-
-        } else if (whenStart.equals("2 Days Before")) {
-
-            if (alarmIntervals.equals("Once")) {
-                alarmIntervalsInMillis = scheduledDate.getTimeInMillis();
-                Log.d("equalintervals", "2 day before Once");
-            } else if (alarmIntervals.equals("Twice")) {
-                alarmIntervalsInMillis = (scheduledDate.getTimeInMillis() - 172800000) / 2;
-                Log.d("equalintervals", "2 day before Twice");
-            } else {
-                alarmIntervalsInMillis = (scheduledDate.getTimeInMillis() - 172800000) / 3;
-                Log.d("equalintervals", "1 day before Thrice");
-            }
-
+        /* Alarm once means just alarm on the time itself, so just return the default value */
+        if (alarmIntervals.equals("Once")) {
+            return alarmIntervalsInMillis;
+        } else if (alarmIntervals.equals("Twice")) {
+            alarmIntervalsInMillis = (scheduledDate.getTimeInMillis() - startDate) / 2;
+            Log.d("alarmintervals", "Twice: " + alarmIntervalsInMillis);
         } else {
-            // Default value //
-            alarmIntervalsInMillis = 120000;
+            alarmIntervalsInMillis = (scheduledDate.getTimeInMillis() - startDate) / 3;
+            Log.d("alarmintervals", "Thrice: " + alarmIntervalsInMillis);
         }
 
-        alarmIntervalsInMillis = 30000;
-        Log.d("alarmIntervals", Long.toString(alarmIntervalsInMillis));
+        Log.d("alarmintervals", "Outside: " + alarmIntervalsInMillis);
         return alarmIntervalsInMillis;
     }
 
