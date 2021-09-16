@@ -3,8 +3,10 @@ package com.mobdeve.s12.mobdevefinalproject.todo;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.view.GestureDetector;
 import android.view.View;
 import android.widget.TextView;
+import android.view.MotionEvent;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -26,6 +28,8 @@ public class ToDoViewHolder extends RecyclerView.ViewHolder {
     private TextView priority;
     private FloatingActionButton reminders;
     private ConstraintLayout layout;
+
+    private GestureDetector gestureDetector;
 
     public ToDoViewHolder(@NonNull @NotNull View itemView) {
         super(itemView);
@@ -64,7 +68,20 @@ public class ToDoViewHolder extends RecyclerView.ViewHolder {
         }
     }
 
+    public void setBackgroundColor(String color) {
+        this.layout.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(color)));
+    }
+
     public FloatingActionButton getButton() {
         return this.reminders;
     }
+
+    public ConstraintLayout getLayout() {
+        return this.layout;
+    }
+
+    public void setGestureDetector(GestureDetector gestureDetector) {
+        this.gestureDetector = gestureDetector;
+    }
+
 }

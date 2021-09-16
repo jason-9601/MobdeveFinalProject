@@ -7,14 +7,19 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.mobdeve.s12.mobdevefinalproject.DateTimeHelper;
@@ -24,8 +29,10 @@ import com.mobdeve.s12.mobdevefinalproject.database.DatabaseHelper;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 public class ToDoAdapter extends RecyclerView.Adapter<ToDoViewHolder> {
 
@@ -37,7 +44,9 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoViewHolder> {
     private SharedPreferences sp;
     private SharedPreferences.Editor spEditor;
 
-    public ToDoAdapter(ArrayList<ToDo> list){
+    private GestureDetector gestureDetector;
+
+    public ToDoAdapter(ArrayList<ToDo> list) {
         this.list = list;
     }
 
@@ -64,6 +73,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoViewHolder> {
         holder.setTime(DateTimeHelper.reformatTimeString(list.get(position).getTodo_hour(), list.get(position).getTodo_minutes()));
         holder.setPriority(list.get(position).getPriority());
         holder.setNotifications(list.get(position).getIsNotified());
+        holder.setBackgroundColor(list.get(position).getBackgroundColor());
 
         holder.getButton().setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,11 +81,47 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoViewHolder> {
                 triggerNotification(holder, position);
             }
         });
+
+        ConstraintLayout cl = holder.getLayout();
+        ToDo selectedTodo = list.get(holder.getBindingAdapterPosition());
+
+        GestureDetector gestureDetector = new GestureDetector(cl.getContext(), new GestureDetector.SimpleOnGestureListener() {
+            @Override
+            public boolean onDown(MotionEvent e) {
+                return true;
+            }
+
+            @Override
+            public boolean onDoubleTap(MotionEvent e) {
+                Log.d("double", selectedTodo.getTodo_id());
+                try {
+                    setBackgroundColorOfLayout(holder, cl, selectedTodo);
+                } catch (ParseException parseException) {
+                    parseException.printStackTrace();
+                }
+                return true;
+            }
+        });
+
+        cl.setOnTouchListener((v, event) -> gestureDetector.onTouchEvent(event));
+
     }
 
     @Override
     public int getItemCount() {
         return this.list.size();
+    }
+
+    // Function for changing background color of layout //
+    private void setBackgroundColorOfLayout(@NonNull @NotNull ToDoViewHolder holder, ConstraintLayout cl, ToDo selectedTodo) throws ParseException {
+        if (cl.getBackgroundTintList() == ColorStateList.valueOf(Color.parseColor("#FFFFFF"))
+                || cl.getBackgroundTintList() == ColorStateList.valueOf(Color.parseColor("#FF0000"))) {
+            cl.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#3DED97")));
+            dbHelper.setToDoBackgroundColor(selectedTodo.getTodo_id(), "#3DED97");
+        } else {
+            cl.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#FFFFFF")));
+            dbHelper.setToDoBackgroundColor(selectedTodo.getTodo_id(), "#FFFFFF");
+        }
     }
 
     // Function for creating notification channel //
@@ -149,9 +195,9 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoViewHolder> {
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(parent.getContext(), selectedTodoId, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        AlarmManager alarmManager = (AlarmManager)parent.getContext().getSystemService(Context.ALARM_SERVICE);
+        AlarmManager alarmManager = (AlarmManager) parent.getContext().getSystemService(Context.ALARM_SERVICE);
 
-        String date[]= selectedTodo.getTodo_date().split("/");
+        String date[] = selectedTodo.getTodo_date().split("/");
         int year = Integer.parseInt(date[0]);
         int month = Integer.parseInt(date[1]);
         int day = Integer.parseInt(date[2]);
@@ -174,7 +220,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoViewHolder> {
         ToDo selectedTodo = list.get(holder.getBindingAdapterPosition());
         int selectedTodoId = Integer.parseInt(selectedTodo.getTodo_id());
 
-        AlarmManager alarmManager = (AlarmManager)parent.getContext().getSystemService(Context.ALARM_SERVICE);
+        AlarmManager alarmManager = (AlarmManager) parent.getContext().getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(parent.getContext(), NotificationReceiver.class);
         intent.putExtra("todoRequestCode", selectedTodoId);
 
@@ -185,15 +231,15 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoViewHolder> {
 
     // Return a Calendar with set values //
     private Calendar getCalendarWithValues(int year, int month, int day,
-                                     int hour, int minutes, int seconds) {
+                                           int hour, int minutes, int seconds) {
         Calendar alarmDate = Calendar.getInstance();
 
         alarmDate.set(Calendar.MONTH, month);
-        alarmDate.set(Calendar.YEAR,year);
+        alarmDate.set(Calendar.YEAR, year);
         alarmDate.set(Calendar.DAY_OF_MONTH, day);
         alarmDate.set(Calendar.HOUR_OF_DAY, hour);
         alarmDate.set(Calendar.MINUTE, minutes);
-        alarmDate.set(Calendar.SECOND,0);
+        alarmDate.set(Calendar.SECOND, 0);
 
         return alarmDate;
     }
@@ -219,7 +265,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoViewHolder> {
         } else if (whenStart.equals("1 Day Before")) {
 
             // Subtract a day in milliseconds //
-            alarmStarting = scheduledDate.getTimeInMillis() -  86400000;
+            alarmStarting = scheduledDate.getTimeInMillis() - 86400000;
             Log.d("equal", "equal2st");
 
         } else if (whenStart.equals("2 Days Before")) {
@@ -265,10 +311,10 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoViewHolder> {
                 alarmIntervalsInMillis = scheduledDate.getTimeInMillis();
                 Log.d("equalintervals", "1 day before Once");
             } else if (alarmIntervals.equals("Twice")) {
-                alarmIntervalsInMillis = (scheduledDate.getTimeInMillis() -  86400000) / 2;
+                alarmIntervalsInMillis = (scheduledDate.getTimeInMillis() - 86400000) / 2;
                 Log.d("equalintervals", "1 day before Twice");
             } else {
-                alarmIntervalsInMillis = (scheduledDate.getTimeInMillis() -  86400000) / 3;
+                alarmIntervalsInMillis = (scheduledDate.getTimeInMillis() - 86400000) / 3;
                 Log.d("equalintervals", "1 day before Thrice");
             }
 
@@ -299,7 +345,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoViewHolder> {
     private int getGoalCount(String alarmIntervals) {
         int goalCount;
 
-        switch(alarmIntervals) {
+        switch (alarmIntervals) {
             case "Once":
                 goalCount = 1;
                 break;

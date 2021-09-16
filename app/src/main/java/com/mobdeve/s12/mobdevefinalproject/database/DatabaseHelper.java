@@ -68,6 +68,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TODO_HOUR = "todo_hour";
     private static final String TODO_MINUTE = "todo_minute";
     private static final String TODO_FULLDATETIME = "todo_fulldatetime";
+    private static final String TODO_BACKGROUND_COLOR = "todo_background_color";
 
     public DatabaseHelper(@Nullable Context context) {
         super(context, DB_NAME, null, DB_VERSION);
@@ -127,7 +128,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         TODO_PRIORITY + " INT, " +
                         TODO_HOUR + " TEXT, " +
                         TODO_MINUTE + " TEXT, " +
-                        TODO_FULLDATETIME + " TEXT" +
+                        TODO_FULLDATETIME + " TEXT, " +
+                        TODO_BACKGROUND_COLOR + " TEXT" +
                         ");";
 
         // Execute queries //
@@ -202,7 +204,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void addUserTodo(String username, String title, String year, String month,
                             String day, int add_specific_time, int set_reminder, String time,
                             String intervals, String starting_time, int priority, String hour,
-                            String minute, String fulldatetime) {
+                            String minute, String fulldatetime, String backgroundColor) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
 
@@ -220,6 +222,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cv.put(TODO_HOUR, hour);
         cv.put(TODO_MINUTE, minute);
         cv.put(TODO_FULLDATETIME, fulldatetime);
+        cv.put(TODO_BACKGROUND_COLOR, backgroundColor);
 
         long result = db.insert(TODO_TABLE, null, cv);
 
@@ -227,6 +230,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             Toast.makeText(context, "Failed Upload :(", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(context, "Todo successfully added :)", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /* Set background color of To Do reminder of given id */
+    public void setToDoBackgroundColor(String id, String color) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+
+        cv.put(TODO_BACKGROUND_COLOR, color);
+
+        long result = db.update(TODO_TABLE, cv, TODO_ID + "=?", new String[]{id});
+        if (result == -1) {
+            Toast.makeText(context, "Failed Update", Toast.LENGTH_SHORT).show();
+        } else {
+            if (color.equals("#FFFFFF")) {
+                Toast.makeText(context, "Marked as incomplete", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(context, "Marked as complete", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

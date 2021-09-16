@@ -2,7 +2,9 @@ package com.mobdeve.s12.mobdevefinalproject.todo;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -13,7 +15,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -151,11 +155,12 @@ public class ToDoFragment extends Fragment {
                 int priority = Integer.parseInt(cursor.getString(11));
                 String hour = cursor.getString(12);
                 String minute = cursor.getString(13);
+                String backgroundColor = cursor.getString(15);
 
                 String date = year + "/" + month + "/" + day;
                 ToDo todo = new ToDo(id, title, date, time,
                         priority, setReminder, intervals, starting_time,
-                        addSpecificTime, hour, minute);
+                        addSpecificTime, hour, minute, backgroundColor);
 
                 toDoList.add(todo);
             }
@@ -181,11 +186,12 @@ public class ToDoFragment extends Fragment {
                 int priority = Integer.parseInt(cursor.getString(11));
                 String hour = cursor.getString(12);
                 String minute = cursor.getString(13);
+                String backgroundColor = cursor.getString(15);
 
                 String date = year + "/" + month + "/" + day;
                 ToDo todo = new ToDo(id, title, date, time,
                         priority, setReminder, intervals, starting_time,
-                        addSpecificTime, hour, minute);
+                        addSpecificTime, hour, minute, backgroundColor);
 
                 toDoList.add(todo);
             }

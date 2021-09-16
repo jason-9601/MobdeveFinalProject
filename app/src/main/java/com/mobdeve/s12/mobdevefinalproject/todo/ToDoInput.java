@@ -206,7 +206,7 @@ public class ToDoInput extends AppCompatActivity implements DatePickerDialog.OnD
 
         dbHelper.addUserTodo(loggedInUser, title, yearSelected, monthSelected, daySelected,
                 isAddSpecificTimeInteger, isSetRemindersInteger, timeCombined, intervals, starting_time,
-                priority, hourSelected, minuteSelected, fullDateTime);
+                priority, hourSelected, minuteSelected, fullDateTime, "#FFFFFF");
     }
 
     private void showDatePicker() {

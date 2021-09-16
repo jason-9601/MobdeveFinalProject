@@ -5,26 +5,21 @@ import java.sql.Time;
 public class ToDo {
 
     private String todo_id;
-
     private String todo_Title;
     private String todo_date;
-
     private String todo_time;
-
     private int priority;
-
     private boolean isSpecificTime;
     private int isNotified;
-
     private String remind_interval;
     private String remind_starting_time;
-
     private String todo_hour;
     private String todo_minutes;
+    private String backgroundColor;
 
     public ToDo(String todo_id, String todo_Title, String todo_date, String todo_time, int priority, int isNotified,
                 String remind_interval, String remind_starting_time, boolean isSpecificTime,
-                String todo_hour, String todo_minutes) {
+                String todo_hour, String todo_minutes, String backgroundColor) {
         this.todo_id = todo_id;
         this.todo_Title = todo_Title;
         this.todo_date = todo_date;
@@ -36,6 +31,7 @@ public class ToDo {
         this.isSpecificTime = isSpecificTime;
         this.todo_hour = todo_hour;
         this.todo_minutes = todo_minutes;
+        this.backgroundColor = backgroundColor;
     }
 
     public String getTodo_id() {
@@ -84,6 +80,10 @@ public class ToDo {
 
     public String getTodo_minutes() {
         return this.todo_minutes;
+    }
+
+    public String getBackgroundColor() {
+        return this.backgroundColor;
     }
 
 }
