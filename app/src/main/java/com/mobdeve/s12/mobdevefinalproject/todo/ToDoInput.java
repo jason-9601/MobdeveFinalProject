@@ -246,7 +246,7 @@ public class ToDoInput extends AppCompatActivity implements DatePickerDialog.OnD
 
     // Return true if to do priority is not between range (0-100) //
     public boolean priorityNotBetweenRange() {
-        if (Integer.parseInt(etToDoPriority.getText().toString().trim()) < 0 || Integer.parseInt(etToDoPriority.getText().toString().trim()) > 100) {
+        if (Integer.parseInt(etToDoPriority.getText().toString().trim()) <= 0 || Integer.parseInt(etToDoPriority.getText().toString().trim()) > 100) {
             return true;
         }
 
