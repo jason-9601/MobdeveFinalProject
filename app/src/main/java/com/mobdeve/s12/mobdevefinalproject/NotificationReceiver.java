@@ -39,9 +39,6 @@ public class NotificationReceiver extends BroadcastReceiver {
         NotificationManager notificationManager = (NotificationManager)context.
                 getSystemService(Context.NOTIFICATION_SERVICE);
 
-        Intent repeatingIntent = new Intent(context, MainActivity.class);
-        repeatingIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
         // Get id of selected to do and set it as the request code for the Pending Intent //
         this.todoRequestCode = intent.getIntExtra("todoRequestCode", 0);
         this.todoTitle = intent.getStringExtra("todoTitle");
@@ -51,12 +48,15 @@ public class NotificationReceiver extends BroadcastReceiver {
         this.currentCount = sp.getInt("CURRENT_COUNT_OF_ID_" + todoRequestCode, 0);
         this.goalCount = sp.getInt("GOAL_COUNT_OF_" + todoRequestCode, 0);
 
+        Log.d("todo", "ID: " + Integer.toString(todoRequestCode) + "\nCurrent:" + Integer.toString(currentCount) +
+                " Goal:" + Integer.toString(goalCount));
+
         /* If current count has not yet reached the goal, notify the user */
         if (currentCount < goalCount) {
-            notifyUser(context, repeatingIntent, notificationManager);
+            notifyUser(context, intent, notificationManager);
         } else {
             /* Cancel the alarm is the current count has reached the goal count */
-            cancelAlarm(context, repeatingIntent);
+            cancelAlarm(context, intent);
         }
     }
 
@@ -73,10 +73,6 @@ public class NotificationReceiver extends BroadcastReceiver {
                 .setAutoCancel(true);
 
         notificationManager.notify(todoRequestCode, builder.build());
-
-        Log.d("currentcount", "Current: " + todoRequestCode);
-        Log.d("currentcount", "Current: " + Integer.toString(currentCount) +
-                " Goal: " + Integer.toString(goalCount));
 
         // Increment current count of alarm //
         spEditor.putInt("CURRENT_COUNT_OF_ID_" + todoRequestCode, currentCount + 1);

@@ -200,37 +200,42 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoViewHolder> {
 
     // Get the starting time of the alarm in milliseconds //
     private long getAlarmStarting(Calendar scheduledDate, String whenStart, String alarmIntervals) {
-        long alarmStarting;
+        // Default value //
+        long alarmStarting = scheduledDate.getTimeInMillis();
 
         if (whenStart.equals("On The Day Itself")) {
 
             if (alarmIntervals.equals("Once")) {
+                // Alarm on the time itself
                 alarmStarting = scheduledDate.getTimeInMillis();
-                Log.d("equal", "Once");
             } else if (alarmIntervals.equals("Twice")) {
                 // Subtract an hour or 3600000 milliseconds //
                 alarmStarting = scheduledDate.getTimeInMillis() - 3600000;
-                Log.d("equal", "Twice");
-            } else {
+            } else if (alarmIntervals.equals("Thrice")) {
                 // Subtract two hours or 7200000 milliseconds //
                 alarmStarting = scheduledDate.getTimeInMillis() - 7200000;
-                Log.d("equal", "Thrice else");
             }
-
-            Log.d("equal", "equal1st");
 
         } else if (whenStart.equals("1 Day Before")) {
 
             // Subtract a day in milliseconds //
             alarmStarting = scheduledDate.getTimeInMillis() -  86400000;
             Log.d("equal", "equal2st");
+
         } else if (whenStart.equals("2 Days Before")) {
 
             // Subtract 2 days in milliseconds //
             alarmStarting = scheduledDate.getTimeInMillis() - 172800000;
             Log.d("equal", "equal3st");
-        } else {
-            // Default value //
+
+        }
+
+        Calendar currentDateTime = Calendar.getInstance();
+        boolean isLater = goalTimeIsLater(scheduledDate.getTimeInMillis(), currentDateTime.getTimeInMillis());
+        Log.d("time-islater", Boolean.toString(isLater));
+
+        // If the value of starting alarm date time is not later than current date time, set alarm starting to the current datetime //
+        if (!isLater) {
             alarmStarting = scheduledDate.getTimeInMillis();
         }
 
@@ -286,10 +291,11 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoViewHolder> {
         }
 
         alarmIntervalsInMillis = 30000;
+        Log.d("alarmIntervals", Long.toString(alarmIntervalsInMillis));
         return alarmIntervalsInMillis;
     }
 
-    // Return goal count base on interval in the database (Once, Twice, Thrice) //
+    // Return goal count based on interval in the database (Once, Twice, Thrice) //
     private int getGoalCount(String alarmIntervals) {
         int goalCount;
 
@@ -309,6 +315,19 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoViewHolder> {
         }
 
         return goalCount;
+    }
+
+    // Returns true if the goal time is a later time than the start time
+    // Parameters are datetime in milliseconds
+    private boolean goalTimeIsLater(long startTime, long goalTime) {
+        if (goalTime - startTime > 0) {
+            return true;
+        } else if (goalTime - startTime == 0) {
+            return true;
+        } else {
+            // goalTime - startTime is < 0 //
+            return false;
+        }
     }
 
 }
