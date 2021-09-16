@@ -225,23 +225,23 @@ public class ToDoInput extends AppCompatActivity implements DatePickerDialog.OnD
 
     // Return true if at least one of the input fields is empty //
     public boolean inputIsNotComplete() {
+        boolean result = false;
+
         // Check if title and date have input first as they are required fields //
         if (etToDoTitle.getText().toString().trim().length() == 0 ||
                 yearSelected == null ||
                 monthSelected == null ||
                 daySelected == null) {
-            return true;
+            result = true;
         }
 
         // When addSpecificTime checkbox is checked, check if time has input //
-        if (addSpecificTime.isSelected()) {
-            if (daySelected == null || hourSelected == null || minuteSelected == null) {
-                return true;
-            }
+        if (addSpecificTime.isChecked() && etToDoTime.getHint().toString().equals("Time of Activity")) {
+            result = true;
         }
 
         // Otherwise return false is input is complete //
-        return false;
+        return result;
     }
 
     // Return true if to do priority is not between range (0-100) //
