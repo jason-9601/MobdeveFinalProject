@@ -1,5 +1,50 @@
 <resources>
-    <string name="app_name">MobdeveFinalProject</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="app_name">PlanX</string>
+    <string-array name="expenses_categories_array">
+        <item>Food</item>
+        <item>Utilities</item>
+        <item>Transportation</item>
+        <item>Debt Payments</item>
+        <item>Entertainment</item>
+        <item>Personal Care</item>
+        <item>Investments</item>
+        <item>Home Supplies</item>
+        <item>Other</item>
+    </string-array>
+
+    <string-array name="months">
+        <item>January</item>
+        <item>February</item>
+        <item>March</item>
+        <item>April</item>
+        <item>May</item>
+        <item>June</item>
+        <item>July</item>
+        <item>August</item>
+        <item>September</item>
+        <item>October</item>
+        <item>November</item>
+        <item>December</item>
+    </string-array>
+
+    <string-array name="reminders_intervals_array">
+        <item>Once</item>
+        <item>Twice</item>
+        <item>Thrice</item>
+    </string-array>
+
+    <string-array name="reminders_intervals_starting_time_array">
+        <item>On The Day Itself</item>
+        <item>1 Day Before</item>
+        <item>2 Days Before</item>
+    </string-array>
+
+    <string name="Done">Done</string>
+    <string name="None">None</string>
+    <string name="DateTime">Date-Time</string>
+    <string name="Priority">Priority</string>
+
+    <string name="Sample_Date">December 31, 2021</string>
+    <string name="Sample_Time">12:00 AM</string>
+    <string name="Sample_Text">Say "Hello World"</string>
 </resources>

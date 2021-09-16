@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".notes.NotesInput">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.1" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.9" />
+
+    <TextView
+        android:id="@+id/tv_notes_input"
+        android:layout_width="0dp"
+        android:layout_height="300dp"
+        android:layout_marginTop="50dp"
+        android:background="@drawable/notes_rounded_rectangle"
+        android:clickable="true"
+        android:editable="true"
+        android:enabled="true"
+        android:focusable="auto"
+        android:focusableInTouchMode="true"
+        android:hint="Enter Text Here..."
+        android:padding="10dp"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline3"
+        app:layout_constraintStart_toStartOf="@+id/guideline2"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btn_done"
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="125dp"
+        android:text="@string/Done"
+        app:layout_constraintEnd_toStartOf="@+id/guideline3"
+        app:layout_constraintStart_toStartOf="@+id/guideline2"
+        app:layout_constraintTop_toBottomOf="@+id/tv_notes_input" />
+
+    <Button
+        android:id="@+id/btn_background_color"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="25dp"
+        android:backgroundTint="#FFFFFF"
+        android:clickable="true"
+        app:layout_constraintEnd_toStartOf="@+id/guideline3"
+        app:layout_constraintHorizontal_bias="0.75"
+        app:layout_constraintStart_toStartOf="@+id/guideline2"
+        app:layout_constraintTop_toBottomOf="@+id/tv_notes_input" />
+
+    <Button
+        android:id="@+id/btn_font_color"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_margin="3dp"
+        android:backgroundTint="#FFFFFF"
+        android:clickable="true"
+        android:text="A"
+        android:textColor="#000000"
+        android:textSize="30sp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline3"
+        app:layout_constraintHorizontal_bias="0.252"
+        app:layout_constraintStart_toStartOf="@+id/guideline2"
+        app:layout_constraintTop_toTopOf="@+id/btn_background_color" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -10,10 +10,14 @@ import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
+import com.mobdeve.s12.mobdevefinalproject.addexpenses.AddExpensesFragment;
+import com.mobdeve.s12.mobdevefinalproject.notes.NotesFragment;
+import com.mobdeve.s12.mobdevefinalproject.todo.ToDoFragment;
+import com.mobdeve.s12.mobdevefinalproject.totalexpenses.TotalExpensesFragment;
 
 public class MainActivity extends AppCompatActivity {
 
-    BottomNavigationView bottomNavigationView;
+    private BottomNavigationView bottomNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

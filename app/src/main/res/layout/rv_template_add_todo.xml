@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_todo"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="10dp"
+        android:background="@drawable/notes_rounded_rectangle"
+        android:backgroundTint="#FFFFFF">
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/gl_2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.85" />
+
+        <TextView
+            android:id="@+id/tv_todo_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:fontFamily="@font/roboto_black"
+            android:textColor="@color/black"
+            android:text="@string/Sample_Time"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/iv_time"
+            app:layout_constraintTop_toBottomOf="@+id/tv_todo_title"
+            app:layout_constraintVertical_bias="0.7" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/gl_60"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.60" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/gl_20"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.10" />
+
+        <TextView
+            android:id="@+id/tv_todo_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:fontFamily="@font/roboto_light"
+            android:textColor="@color/black"
+            android:text="@string/Sample_Text"
+            android:textAlignment="center"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toStartOf="@+id/gl_2"
+            app:layout_constraintStart_toStartOf="@+id/gl_15"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/gl_15"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.15" />
+
+        <ImageView
+            android:id="@+id/iv_calendar"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="15dp"
+            app:layout_constraintStart_toStartOf="@+id/gl_20"
+            app:layout_constraintTop_toBottomOf="@+id/tv_todo_title"
+            app:srcCompat="@drawable/ic_calendar_black" />
+
+        <TextView
+            android:id="@+id/tv_todo_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:fontFamily="@font/roboto_black"
+            android:textColor="@color/black"
+            android:text="@string/Sample_Date"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/iv_calendar"
+            app:layout_constraintTop_toBottomOf="@+id/tv_todo_title"
+            app:layout_constraintVertical_bias="0.7" />
+
+        <ImageView
+            android:id="@+id/iv_time"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="15dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/gl_60"
+            app:layout_constraintTop_toBottomOf="@+id/tv_todo_title"
+            app:srcCompat="@drawable/ic_clock_black" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_reminders"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#FFFFFF"
+            android:clickable="true"
+            android:focusable="auto"
+            app:borderWidth="2dp"
+            app:fabCustomSize="40dp"
+            app:layout_constraintBottom_toBottomOf="@+id/cl_priority"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tv_todo_title"
+            app:layout_constraintTop_toTopOf="@+id/cl_priority"
+            app:maxImageSize="25dp"
+            app:srcCompat="@drawable/megaphone_icon_301"
+            tools:borderWidth="2dp" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_priority"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_margin="5dp"
+            app:layout_constraintBottom_toTopOf="@+id/iv_calendar"
+            app:layout_constraintEnd_toStartOf="@+id/gl_15"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/iv_priority"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@android:drawable/star_big_on" />
+
+            <TextView
+                android:id="@+id/tv_priority"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_black"
+                android:shadowColor="@color/black"
+                android:shadowDx="1.5"
+                android:shadowDy="1.3"
+                android:shadowRadius="1.6"
+                android:text="100"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/iv_priority"
+                app:layout_constraintVertical_bias="0.45" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

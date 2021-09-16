@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/blue_bg"
+    tools:context=".addexpenses.AddExpensesFragment">
     tools:context=".AddExpensesFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -14,19 +16,27 @@
             android:id="@+id/tv_expenses_header"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
+            android:fontFamily="@font/roboto"
             android:text="Expenses"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toTopOf="@id/gl_add_expenses_rv"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_expenses_amount" />
 
         <TextView
             android:id="@+id/tv_expenses_amount"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
+            android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
+            android:layout_marginEnd="5dp"
+            android:fontFamily="@font/roboto_black"
             android:text="5000"
+            android:textColor="@color/white"
+            android:textSize="25sp"
+            app:layout_constraintEnd_toStartOf="@+id/gl_add_expenses_rv_middle"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_add_expenses_header" />
 
@@ -35,20 +45,80 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="This week's totals"
+            android:fontFamily="@font/roboto"
+            android:text="Your Totals"
+            android:textColor="@color/white"
+            android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tv_profits_amount"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:fontFamily="@font/roboto_black"
+            android:text="2000"
+            android:textAlignment="textEnd"
+            android:textColor="@color/white"
+            android:textSize="25sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/gl_add_expenses_rv_middle"
+            app:layout_constraintTop_toBottomOf="@+id/tv_add_expenses_header" />
+
+        <TextView
+            android:id="@+id/tv_profits_header"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="20dp"
-            android:text="2000"
+            android:layout_marginEnd="10dp"
+            android:fontFamily="@font/roboto"
+            android:text="Profits"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toTopOf="@id/gl_add_expenses_rv"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_add_expenses_header" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_profits_amount" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_add_expenses"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="25dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/gl_add_expenses_rv" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_add_expense"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="20dp"
+            android:backgroundTint="@color/orange_1"
+            android:clickable="true"
+            android:src="@drawable/ic_add"
+            app:tint="#FFFFFF"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/gl_add_expenses_rv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent=".20" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/gl_add_expenses_rv_middle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent=".50" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>
